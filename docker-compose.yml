@@ -1,0 +1,27 @@
+services:
+  backend:
+    container_name: backend_container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    networks:
+      project-network:
+    env_file:
+      - .env
+  db:
+    container_name: db_container
+    image: postgres:latest
+    ports:
+      - '5433:5432'
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    networks:
+      project-network:
+    volumes:
+      - ./pg_db:/var/lib/postgresql/data
+networks:
+  project-network:

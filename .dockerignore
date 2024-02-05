@@ -1,0 +1,21 @@
+# large files
+node_modules
+
+# frequently updated files
+test
+.gitignore
+.git
+
+# unnecessary files
+.prettierrc 
+README.md
+
+# If we don’t need the files to run the app without Docker, we do not need the files to run the app with Docker.
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Unlike Dockerfile, the app does need .env in order to run properly, both when using Docker and without using Docker. 
+# However, if we are using a docker-compose.yml file, like we are in this app, and in the yml file we define an env_file, 
+# then the .env file can be ignored.
+.env
