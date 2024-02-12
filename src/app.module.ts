@@ -4,10 +4,9 @@ import { AppService } from './app.service';
 import { dataSourceOptions } from 'db/data-source';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LoggerMiddleware } from 'utils/logger.middleware';
-
-
+import { SeatModule } from './seat/seat.module';
 @Module({
-  imports: [TypeOrmModule.forRoot(dataSourceOptions)],
+  imports: [TypeOrmModule.forRoot(dataSourceOptions), SeatModule],
   controllers: [AppController],
   providers: [AppService],
 })
