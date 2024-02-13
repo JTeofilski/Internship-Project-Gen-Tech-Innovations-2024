@@ -1,4 +1,16 @@
 services:
+  migration:
+    image: 'cinema_img'
+    build:
+      context: .
+    env_file:
+      - .env
+    command: ['npm', 'run', 'migration:run']
+    networks:
+      - project-network
+    depends_on:
+      db:
+        condition: service_healthy
   backend:
     container_name: backend_container
     build:
@@ -23,5 +35,19 @@ services:
       project-network:
     volumes:
       - ./pg_db:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'pg_isready',
+          '-q',
+          '-d',
+          '${POSTGRES_DB}',
+          '-U',
+          '${POSTGRES_USER}',
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 networks:
   project-network:
