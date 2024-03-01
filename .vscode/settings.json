@@ -1,0 +1,59 @@
+{
+  "editor.detectIndentation": false,
+  "typescript.format.enable": false,
+  "json.format.enable": false,
+  "typescript.suggest.autoImports": true,
+  "typescript.suggest.paths": false,
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "[json]": {
+    "editor.quickSuggestions": {
+      "strings": true
+    },
+    "editor.suggest.insertMode": "replace",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit"
+    }
+  },
+  "[jsonc]": {
+    "editor.quickSuggestions": {
+      "strings": true
+    },
+    "editor.suggest.insertMode": "replace",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit"
+    }
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit"
+    }
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "node_modules": true,
+    "dist": true,
+    "coverage": true,
+    "heapdumps": true,
+    ".*": false,
+    "bin": false,
+    "www": false,
+    "*.json": false
+  },
+  "debug.javascript.usePreview": true,
+  "[json][jsonc][typescript]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit"
+    }
+  }
+}

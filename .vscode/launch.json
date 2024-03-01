@@ -1,0 +1,32 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "NestJS Debug",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/node_modules/@nestjs/cli/bin/nest.js",
+            "args": [
+                "start",
+                "--watch"
+            ],
+            "cwd": "${workspaceFolder}",
+            "protocol": "inspector",
+            "runtimeArgs": [
+                "--nolazy",
+                "--inspect-brk=9229"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "restart": true,
+            "console": "integratedTerminal",
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ],
+            "preLaunchTask": "compile"
+        }
+    ]
+}

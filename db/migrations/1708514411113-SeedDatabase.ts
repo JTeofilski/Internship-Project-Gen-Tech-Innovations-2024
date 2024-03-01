@@ -3,9 +3,11 @@ import { seatSeeds } from "db/seeds/seat.seeds";
 import { movieSeeds } from "db/seeds/movie.seeds";
 import { genreSeeds } from "db/seeds/genre.seeds";
 import { auditoriumSeeds } from "db/seeds/auditorium.seeds";
+import { userSeeds } from "db/seeds/user.seeds";
+import { Auditorium } from "src/entities/auditorium.entity";
 
-export class SeedDatabase1707903087258 implements MigrationInterface {
-    name = 'SeedDatabase1707903087258'
+export class SeedDatabase1708514411113 implements MigrationInterface {
+    name = 'SeedDatabase1708514411113'
 
 
     public async up(queryRunner: QueryRunner): Promise<void> {
@@ -38,6 +40,10 @@ export class SeedDatabase1707903087258 implements MigrationInterface {
                 );
             }
         }
+
+        await queryRunner.manager
+            .getRepository('User')
+            .save(userSeeds);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> { }

@@ -7,6 +7,6 @@ import { Repository } from 'typeorm';
 export class AuditoriumService {
     constructor(
         @InjectRepository(Auditorium)
-        private readonly seatRepository: Repository<Auditorium>,
+        private readonly auditoriumRepository: Repository<Auditorium>,
     ) { }
 }
