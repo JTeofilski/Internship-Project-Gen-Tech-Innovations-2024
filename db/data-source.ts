@@ -1,5 +1,6 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 import 'dotenv/config';
+import { UserSubscriber } from 'src/user/subscribers/user.subscriber';
 
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
@@ -12,6 +13,7 @@ export const dataSourceOptions: DataSourceOptions = {
   entities: ['dist/**/*.entity.js'],
   migrations: ['dist/db/migrations/*.js'],
   migrationsTransactionMode: 'each',
+  subscribers: [UserSubscriber],
 };
 
 const dataSource = new DataSource(dataSourceOptions);

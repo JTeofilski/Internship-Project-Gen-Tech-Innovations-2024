@@ -4,7 +4,6 @@ import {
   Get,
   Post,
   Request,
-  Session,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';

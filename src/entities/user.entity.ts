@@ -20,14 +20,12 @@ export class User {
   @Column({
     type: 'enum',
     enum: UserTypeEnum,
+    default: UserTypeEnum.CUSTOMER,
   })
   userType: UserTypeEnum;
 
   @OneToMany(() => Ticket, (ticket) => ticket.user)
   tickets: Ticket[];
-
-  /* @Column()
-  test: string;*/
 
   async comparePassword(password: string): Promise<boolean> {
     if (this.password) {
