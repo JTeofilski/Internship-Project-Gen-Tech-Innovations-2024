@@ -1,10 +1,16 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 
 import UserRegistrationDTO from 'src/user/dtos/user.registration.dto';
 import { UserSubscriber } from 'src/user/subscribers/user.subscriber';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
+import { NotFoundException } from '@nestjs/common';
+import UserUpdateDTO from 'src/user/dtos/user.update.dto';
 
 @Injectable()
 export class UserService {
@@ -26,5 +32,22 @@ export class UserService {
     }
 
     return await this.userRepository.save(this.userRepository.create(userDTO));
+  }
+
+  async findOneById(id: number): Promise<User | undefined> {
+    return await this.userRepository.findOne({ where: { id } });
+  }
+
+  async updateUser(id: number, userDTO: UserUpdateDTO): Promise<User> {
+    const user = await this.findOneById(id);
+
+    if (!(user && id == user.id)) {
+      throw new ForbiddenException('SOMETHING WENT WRONG');
+    }
+
+    Object.assign(user, userDTO);
+    await this.userRepository.save(user);
+
+    return user;
   }
 }

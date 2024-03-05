@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { UserTypeEnum } from 'src/enums/userType.enum';
 
@@ -25,7 +30,9 @@ export class UserTypeGuard implements CanActivate {
 
     // Ako korisnik nije autentifikovan ili nema odgovarajući tip, zabrani pristup
     if (!user || user.userType !== requiredType) {
-      return false;
+      throw new ForbiddenException(
+        'MY FORBIDDEN EXCEPTION FROM USER_TYPE_GUARD',
+      );
     }
 
     // Ako je korisnik autentifikovan i ima odgovarajući tip, dozvoli pristup
