@@ -11,6 +11,8 @@ import { AuditoriumModule } from './auditorium/auditorium.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { PassportModule } from '@nestjs/passport';
+import { MovieScreeningModule } from './movie-screening/movie-screening.module';
+import { TicketModule } from './ticket/ticket.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot(dataSourceOptions),
@@ -20,6 +22,8 @@ import { PassportModule } from '@nestjs/passport';
     AuditoriumModule,
     UserModule,
     AuthModule,
+    MovieScreeningModule,
+    TicketModule,
   ],
   controllers: [AppController],
   providers: [AppService],

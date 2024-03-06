@@ -5,14 +5,15 @@ import { genreSeeds } from 'db/seeds/genre.seeds';
 import { auditoriumSeeds } from 'db/seeds/auditorium.seeds';
 import { userSeeds } from 'db/seeds/user.seeds';
 import { Auditorium } from 'src/entities/auditorium.entity';
+import { movieScreeningSeeds } from 'db/seeds/movie-screening.seeds';
+import { ticketSeeds } from 'db/seeds/ticket.seeds';
 
 export class SeedDatabase1709540760317 implements MigrationInterface {
   name = 'SeedDatabase1709540760317';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.manager.getRepository('Seat').save(seatSeeds);
-
     await queryRunner.manager.getRepository('Auditorium').save(auditoriumSeeds);
+    await queryRunner.manager.getRepository('User').save(userSeeds);
 
     await queryRunner.manager.getRepository('Genre').save(genreSeeds);
 
@@ -36,7 +37,57 @@ export class SeedDatabase1709540760317 implements MigrationInterface {
       }
     }
 
-    await queryRunner.manager.getRepository('User').save(userSeeds);
+    const auditoriumRepository =
+      queryRunner.manager.getRepository('Auditorium');
+    const seatRepository = queryRunner.manager.getRepository('Seat');
+
+    const auditoriums = await auditoriumRepository.find();
+
+    const seatEntities = seatSeeds.map((seatSeed) => {
+      const auditorium = auditoriums.find(
+        (a) => a.id === seatSeed.auditoriumId,
+      );
+
+      return seatRepository.create({ ...seatSeed, auditorium });
+    });
+
+    await queryRunner.manager.getRepository('Seat').save(seatEntities);
+
+    const movieScreeningRepository =
+      queryRunner.manager.getRepository('MovieScreening');
+
+    const movieScreeningEntities = movieScreeningSeeds.map((seed) => {
+      const movie = movies.find((m) => m.id === seed.movieId);
+      const auditorium = auditoriums.find((a) => a.id === seed.auditoriumId);
+
+      return movieScreeningRepository.create({
+        ...seed,
+        movie,
+        auditorium,
+      });
+    });
+
+    await queryRunner.manager
+      .getRepository('MovieScreening')
+      .save(movieScreeningEntities);
+    const ticketRepository = queryRunner.manager.getRepository('Ticket');
+
+    const ticketEntities = ticketSeeds.map((ticketSeed) => {
+      const movieScreening = movieScreeningEntities.find(
+        (ms) => ms.id === ticketSeed.movieScreeningId,
+      );
+      const seat = seatEntities.find((s) => s.id === ticketSeed.seatId);
+      const user = userSeeds.find((u) => u.id === ticketSeed.userId);
+
+      return ticketRepository.create({
+        ...ticketSeed,
+        movieScreening,
+        seat,
+        user,
+      });
+    });
+
+    await queryRunner.manager.getRepository('Ticket').save(ticketEntities);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {}
