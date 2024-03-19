@@ -1,30 +1,40 @@
-import { timeStamp } from "console";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Movie } from "./movie.entity";
-import { Auditorium } from "./auditorium.entity";
-import { Ticket } from "./ticket.entity";
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Movie } from './movie.entity';
+import { Auditorium } from './auditorium.entity';
+import { Ticket } from './ticket.entity';
+import { MovieScreeningTypeEnum } from 'src/enums/movieScreeningType.enum';
 
 @Entity()
 export class MovieScreening {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @PrimaryGeneratedColumn()
-    id: number
+  @Column({ type: 'timestamp with time zone' })
+  dateAndTime: Date;
 
-    @Column({ type: "date" })
-    date: string
+  @Column({
+    type: 'enum',
+    enum: MovieScreeningTypeEnum,
+    default: MovieScreeningTypeEnum.ACTIVE,
+  })
+  status: MovieScreeningTypeEnum;
 
-    @Column({ type: "time" })
-    startTime: string
+  @ManyToOne(() => Movie, (movie) => movie.movieScreenings, {
+    onDelete: 'SET NULL',
+  })
+  movie: Movie;
 
-    @Column()
-    isDeleted: boolean = false
+  @ManyToOne(() => Auditorium, (auditorium) => auditorium.movieScreenings, {
+    onDelete: 'SET NULL',
+  })
+  auditorium: Auditorium;
 
-    @ManyToOne(() => Movie, movie => movie.movieScreenings, { onDelete: 'SET NULL' })
-    movie: Movie
-
-    @ManyToOne(() => Auditorium, auditorium => auditorium.movieScreenings, { onDelete: 'SET NULL' })
-    auditorium: Auditorium
-
-    @OneToMany(() => Ticket, ticket => ticket.movieScreening)
-    tickets: Ticket[]
+  @OneToMany(() => Ticket, (ticket) => ticket.movieScreening)
+  tickets: Ticket[];
 }

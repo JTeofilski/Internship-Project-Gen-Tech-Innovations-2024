@@ -10,12 +10,19 @@ import { GenreModule } from './genre/genre.module';
 import { AuditoriumModule } from './auditorium/auditorium.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
-import { PassportModule } from '@nestjs/passport';
 import { MovieScreeningModule } from './movie-screening/movie-screening.module';
 import { TicketModule } from './ticket/ticket.module';
 @Module({
   imports: [
-    TypeOrmModule.forRoot(dataSourceOptions),
+    TypeOrmModule.forRoot({
+      ...dataSourceOptions,
+      extra: {
+        timezone: 'UTC',
+        dateStrings: ['TIMESTAMP WITH TIME ZONE', 'DATETIME', 'DATE'],
+        useUTC: true,
+        skipUtcConversion: true,
+      },
+    }),
     SeatModule,
     MovieModule,
     GenreModule,

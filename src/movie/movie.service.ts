@@ -5,9 +5,12 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class MovieService {
-    constructor(
-        @InjectRepository(Movie)
-        private readonly movieRepository: Repository<Movie>,
-    ) { }
+  constructor(
+    @InjectRepository(Movie)
+    private readonly movieRepository: Repository<Movie>,
+  ) {}
 
+  async findOneById(id: number): Promise<Movie | undefined> {
+    return await this.movieRepository.findOne({ where: { id } });
+  }
 }

@@ -8,8 +8,8 @@ import { Auditorium } from 'src/entities/auditorium.entity';
 import { movieScreeningSeeds } from 'db/seeds/movie-screening.seeds';
 import { ticketSeeds } from 'db/seeds/ticket.seeds';
 
-export class SeedDatabase1709540760317 implements MigrationInterface {
-  name = 'SeedDatabase1709540760317';
+export class SeedDatabase1710851285714 implements MigrationInterface {
+  name = 'SeedDatabase1710851285714';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.manager.getRepository('Auditorium').save(auditoriumSeeds);
@@ -90,7 +90,16 @@ export class SeedDatabase1709540760317 implements MigrationInterface {
     await queryRunner.manager.getRepository('Ticket').save(ticketEntities);
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {}
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query('DELETE FROM ticket;');
+    await queryRunner.query('DELETE FROM movie_screening;');
+    await queryRunner.query('DELETE FROM seat;');
+    await queryRunner.query('DELETE FROM genre_movies_movie;');
+    await queryRunner.query('DELETE FROM movie;');
+    await queryRunner.query('DELETE FROM genre;');
+    await queryRunner.query('DELETE FROM "user";');
+    await queryRunner.query('DELETE FROM auditorium;');
+  }
 
   public getRandomElements<T>(array: T[], count: number): T[] {
     const shuffled = array.sort(() => 0.5 - Math.random());

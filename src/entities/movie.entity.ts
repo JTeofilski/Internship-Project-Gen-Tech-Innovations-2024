@@ -1,26 +1,30 @@
-import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { MovieScreening } from "./movieScreening.entity";
-import { Genre } from "./genre.entity";
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { MovieScreening } from './movieScreening.entity';
+import { Genre } from './genre.entity';
 
 @Entity()
 export class Movie {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @PrimaryGeneratedColumn()
-    id: number
+  @Column()
+  name: string;
 
-    @Column()
-    name: string
+  @Column()
+  duration: number;
 
-    @Column()
-    duration: number
+  @Column()
+  disabled: boolean = false;
 
-    @Column()
-    isDeleted: boolean = false
+  @OneToMany(() => MovieScreening, (movieScreening) => movieScreening.movie)
+  movieScreenings: MovieScreening[];
 
-    @OneToMany(() => MovieScreening, movieScreening => movieScreening.movie)
-    movieScreenings: MovieScreening[];
-
-    @ManyToMany(() => Genre, genre => genre.movies)
-    genres: Genre[]
-
+  @ManyToMany(() => Genre, (genre) => genre.movies)
+  genres: Genre[];
 }
