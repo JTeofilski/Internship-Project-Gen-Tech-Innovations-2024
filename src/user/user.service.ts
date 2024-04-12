@@ -9,7 +9,6 @@ import { User } from 'src/entities/user.entity';
 import UserRegistrationDTO from 'src/user/dtos/user.registration.dto';
 import { UserSubscriber } from 'src/user/subscribers/user.subscriber';
 import { Repository } from 'typeorm';
-import { NotFoundException } from '@nestjs/common';
 import UserUpdateDTO from 'src/user/dtos/user.update.dto';
 
 @Injectable()
@@ -31,18 +30,30 @@ export class UserService {
       throw new ConflictException('ACCOUNT WITH PROVIDED EMAIL ALREADY EXISTS');
     }
 
-    return await this.userRepository.save(this.userRepository.create(userDTO));
+    const user = await this.userRepository.save(
+      this.userRepository.create(userDTO),
+    );
+
+    return user;
   }
 
   async findOneById(id: number): Promise<User | undefined> {
     return await this.userRepository.findOne({ where: { id } });
   }
 
-  async updateUser(id: number, userDTO: UserUpdateDTO): Promise<User> {
+  async updateUser(
+    id: number,
+    userDTO: UserUpdateDTO,
+    userFromRequestId: number,
+  ): Promise<User> {
     const user = await this.findOneById(id);
 
-    if (!(user && id == user.id)) {
-      throw new ForbiddenException('SOMETHING WENT WRONG');
+    if (!user) {
+      throw new ForbiddenException('USER NOT FOUND');
+    }
+
+    if (!(id === user.id && userFromRequestId === user.id)) {
+      throw new ForbiddenException('NOT AUTHORIZED TO UPDATE THIS USER');
     }
 
     Object.assign(user, userDTO);

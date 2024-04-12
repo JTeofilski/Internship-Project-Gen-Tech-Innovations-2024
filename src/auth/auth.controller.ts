@@ -22,26 +22,30 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req, @Body() body: LoginDTO): Promise<User> {
-    return req.user;
+    const res = req.user;
+    return res;
   }
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @Get('/protected')
   getAvailableForBothTypes(@Request() req): Promise<User> {
-    return req.user;
+    const res = req.user;
+    return res;
   }
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.ADMIN)
   @Get('/admin')
   getAvailableForAdmin(@Request() req): Promise<User> {
-    return req.user;
+    const res = req.user;
+    return res;
   }
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.CUSTOMER)
   @Get('/customer')
   getAvailableForCustomer(@Request() req): Promise<User> {
-    return req.user;
+    const res = req.user;
+    return res;
   }
 }

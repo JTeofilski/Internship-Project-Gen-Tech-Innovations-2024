@@ -185,14 +185,15 @@ export class MovieScreeningService {
       movieScreening.auditorium = auditorium;
     }
 
-    const now = new Date();
+    const now = new Date().getTime();
 
     if (movieScreeningDTO.dateAndTime !== undefined) {
-      if (movieScreeningDTO.dateAndTime <= now) {
+      const screeningTime = new Date(movieScreeningDTO.dateAndTime).getTime();
+      if (screeningTime <= now) {
         throw new ConflictException(
           'DATE AND TIME FOR MOVIE_SCREENING CANNOT BE IN THE PAST',
         );
-      } else if (movieScreeningDTO.dateAndTime > now) {
+      } else if (screeningTime > now) {
         if (
           movieScreeningDTO.auditoriumId !== undefined &&
           movieScreeningDTO.movieId !== undefined

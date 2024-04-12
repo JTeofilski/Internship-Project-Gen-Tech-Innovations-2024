@@ -1,6 +1,15 @@
-// default keyword is optional, it means that if we want to rename object during creation proccess, we can!
+import { IsNotEmpty, IsString } from 'class-validator';
+
 export default class UserRegistrationDTO {
+  @IsNotEmpty()
+  @IsString()
   fullName: string;
+
+  @IsNotEmpty()
+  @IsString()
   email: string;
+
+  @IsNotEmpty()
+  @IsString()
   password: string;
 }

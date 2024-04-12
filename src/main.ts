@@ -1,20 +1,32 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as session from 'cookie-session';
 import * as passport from 'passport';
 import 'dotenv/config';
-import { ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor } from '@nestjs/common';
+import * as fs from 'fs';
+import { DTO_Schemas } from 'dto-schemas';
+import { globalValidationPipe } from 'validation.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
     .setTitle('CLA')
+    .addServer('http://localhost:3000')
+    .addCookieAuth()
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
+
+  document.components.schemas = DTO_Schemas;
+
   SwaggerModule.setup('/api/docs', app, document);
+
+  fs.writeFile('docs/swagger.json', JSON.stringify(document), () => {
+    console.log('Swagger document generated in docs/swagger.json');
+  });
 
   app.use(
     session({
@@ -47,11 +59,8 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-    }),
-  );
+  app.useGlobalPipes(globalValidationPipe);
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   await app.listen(process.env.APP_PORT);
 }

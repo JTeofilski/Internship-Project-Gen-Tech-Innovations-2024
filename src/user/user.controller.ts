@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import UserUpdateDTO from 'src/user/dtos/user.update.dto';
@@ -27,7 +28,10 @@ export class UserController {
   async updateUser(
     @Param('id') id: number,
     @Body() userDTO: UserUpdateDTO,
+    @Req() request,
   ): Promise<User> {
-    return await this.userService.updateUser(id, userDTO);
+    const userFromRequestId = request.user.id;
+
+    return await this.userService.updateUser(id, userDTO, userFromRequestId);
   }
 }
