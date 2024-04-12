@@ -244,4 +244,17 @@ export class MovieScreeningService {
 
     return movieScreenings;
   }
+
+  async adminDeletesMovieScreening(id: number): Promise<MovieScreening> {
+    const toBeDeletedMS = await this.findOneById(id);
+
+    if (!toBeDeletedMS) {
+      throw new NotFoundException(
+        'MOVIE-SCREENING WITH PROVIDED ID DOES NOT EXIST IN THE DATABASE',
+      );
+    } else {
+      await this.movieScreeningRepository.delete(id);
+      return toBeDeletedMS;
+    }
+  }
 }

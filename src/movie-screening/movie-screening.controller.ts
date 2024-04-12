@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Delete,
   Param,
   Patch,
   Post,
@@ -49,5 +50,14 @@ export class MovieScreeningController {
   @Get('get-ms')
   async adminGetsMovieScreenings(): Promise<MovieScreening[]> {
     return await this.movieScreeningService.adminGetsMovieScreenings();
+  }
+
+  @UseGuards(AuthenticatedGuard, UserTypeGuard)
+  @UserType(UserTypeEnum.ADMIN)
+  @Delete(':id')
+  async adminDeletesMovieScreening(
+    @Param('id') id: number,
+  ): Promise<MovieScreening> {
+    return await this.movieScreeningService.adminDeletesMovieScreening(id);
   }
 }
