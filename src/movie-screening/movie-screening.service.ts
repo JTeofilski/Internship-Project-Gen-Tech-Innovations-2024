@@ -234,4 +234,14 @@ export class MovieScreeningService {
     Object.assign(movieScreening, movieScreeningDTO);
     return await this.movieScreeningRepository.save(movieScreening);
   }
+
+  async adminGetsMovieScreenings(): Promise<MovieScreening[]> {
+    const movieScreenings = await this.movieScreeningRepository
+      .createQueryBuilder('movieScreening')
+      .leftJoinAndSelect('movieScreening.movie', 'movie')
+      .leftJoinAndSelect('movieScreening.auditorium', 'auditorium')
+      .getMany();
+
+    return movieScreenings;
+  }
 }

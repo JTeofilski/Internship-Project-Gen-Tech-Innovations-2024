@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   Patch,
   Post,
@@ -41,5 +42,12 @@ export class MovieScreeningController {
       id,
       movieScreeningDTO,
     );
+  }
+
+  @UseGuards(AuthenticatedGuard, UserTypeGuard)
+  @UserType(UserTypeEnum.ADMIN)
+  @Get('get-ms')
+  async adminGetsMovieScreenings(): Promise<MovieScreening[]> {
+    return await this.movieScreeningService.adminGetsMovieScreenings();
   }
 }
