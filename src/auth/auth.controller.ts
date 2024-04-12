@@ -26,6 +26,12 @@ export class AuthController {
     return res;
   }
 
+  @Post('logout')
+  async logout(@Request() req) {
+    req.logout(() => {});
+    return { message: 'LOGOUT SUCCESSFUL' };
+  }
+
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @Get('/protected')
   getAvailableForBothTypes(@Request() req): Promise<User> {
