@@ -87,4 +87,14 @@ export const DTO_Schemas = {
     required: [],
     additionalProperties: false,
   },
+  GenreCreateDTO: {
+    type: 'object',
+    properties: {
+      name: {
+        type: 'string',
+      },
+    },
+    required: ['name'],
+    additionalProperties: false,
+  },
 };
