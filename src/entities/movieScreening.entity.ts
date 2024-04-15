@@ -1,5 +1,6 @@
 import {
   Column,
+  DeleteDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
@@ -37,4 +38,7 @@ export class MovieScreening {
 
   @OneToMany(() => Ticket, (ticket) => ticket.movieScreening)
   tickets: Ticket[];
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }

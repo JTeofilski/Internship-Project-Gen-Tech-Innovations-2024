@@ -6,6 +6,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from 'src/auth/auth.service';
 import LoginDTO from 'src/auth/dtos/login.dto';
 import { AuthenticatedGuard } from 'src/auth/guards/authenticated.guard';
@@ -15,6 +16,7 @@ import { UserType } from 'src/auth/user-type.decorator';
 import { User } from 'src/entities/user.entity';
 import { UserTypeEnum } from 'src/enums/userType.enum';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

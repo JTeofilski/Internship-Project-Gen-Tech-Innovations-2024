@@ -245,7 +245,7 @@ export class MovieScreeningService {
     return movieScreenings;
   }
 
-  async adminDeletesMovieScreening(id: number): Promise<MovieScreening> {
+  async softDeleteMovieScreening(id: number): Promise<MovieScreening> {
     const toBeDeletedMS = await this.findOneById(id);
 
     if (!toBeDeletedMS) {
@@ -253,8 +253,24 @@ export class MovieScreeningService {
         'MOVIE-SCREENING WITH PROVIDED ID DOES NOT EXIST IN THE DATABASE',
       );
     } else {
-      await this.movieScreeningRepository.delete(id);
-      return toBeDeletedMS;
+      return await this.movieScreeningRepository.softRemove(toBeDeletedMS);
     }
+  }
+
+  async findForRestore(id: number): Promise<MovieScreening | undefined> {
+    return await this.movieScreeningRepository.findOne({
+      where: { id },
+      withDeleted: true,
+    });
+  }
+
+  async restoreMovieScreening(id: number) {
+    const existing = await this.findForRestore(id);
+    if (!existing) {
+      throw new NotFoundException(
+        `MOVIE WITH PROVIDED ID: ${id} DOES NOT EXIST.`,
+      );
+    }
+    await this.movieScreeningRepository.recover(existing);
   }
 }

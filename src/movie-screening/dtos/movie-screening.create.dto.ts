@@ -10,7 +10,6 @@ export default class MovieScreeningCreateDTO {
   @IsNotEmpty()
   @IsInt()
   @Min(1)
-  @Max(10)
   movieId: number;
 
   @IsNotEmpty()

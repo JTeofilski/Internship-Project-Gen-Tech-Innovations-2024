@@ -19,6 +19,15 @@ export class GenreService {
     return await this.genreRepository.findOne({ where: { id } });
   }
 
+  async findByIds(ids: number[]): Promise<Genre[]> {
+    const genres: Genre[] = [];
+    for (let i = 0; i < ids.length; i++) {
+      const oneId = await this.findOneById(ids[i]);
+      genres.push(oneId);
+    }
+    return genres;
+  }
+
   async adminGetsAllGenres(): Promise<Genre[]> {
     return await this.genreRepository.find();
   }

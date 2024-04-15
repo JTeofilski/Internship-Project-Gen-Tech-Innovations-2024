@@ -8,6 +8,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthenticatedGuard } from 'src/auth/guards/authenticated.guard';
 import { UserTypeGuard } from 'src/auth/guards/user-type.guard';
 import { UserType } from 'src/auth/user-type.decorator';
@@ -17,6 +18,7 @@ import MovieScreeningCreateDTO from 'src/movie-screening/dtos/movie-screening.cr
 import MovieScreeningEditDTO from 'src/movie-screening/dtos/movie-screening.edit.dto';
 import { MovieScreeningService } from 'src/movie-screening/movie-screening.service';
 
+@ApiTags('MovieScreenings')
 @Controller('movie-screening')
 export class MovieScreeningController {
   constructor(private readonly movieScreeningService: MovieScreeningService) {}
@@ -54,10 +56,17 @@ export class MovieScreeningController {
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.ADMIN)
-  @Delete(':id')
-  async adminDeletesMovieScreening(
+  @Delete('soft-delete/:id')
+  async softDeleteMovieScreening(
     @Param('id') id: number,
   ): Promise<MovieScreening> {
-    return await this.movieScreeningService.adminDeletesMovieScreening(id);
+    return await this.movieScreeningService.softDeleteMovieScreening(id);
+  }
+
+  @UseGuards(AuthenticatedGuard, UserTypeGuard)
+  @UserType(UserTypeEnum.ADMIN)
+  @Post('restore/:id')
+  async restoreMovieScreening(@Param('id') id: number) {
+    await this.movieScreeningService.restoreMovieScreening(id);
   }
 }

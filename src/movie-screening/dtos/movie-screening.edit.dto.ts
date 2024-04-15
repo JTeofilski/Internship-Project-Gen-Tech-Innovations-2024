@@ -15,7 +15,6 @@ export default class MovieScreeningEditDTO {
   @IsOptional()
   @IsInt()
   @Min(1)
-  @Max(10)
   movieId?: number;
 
   @IsOptional()

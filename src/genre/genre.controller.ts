@@ -14,7 +14,9 @@ import { UserTypeEnum } from 'src/enums/userType.enum';
 import { Genre } from 'src/entities/genre.entity';
 import { UserType } from 'src/auth/user-type.decorator';
 import GenreCreateDTO from 'src/genre/dtos/genre.create.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Genres')
 @Controller('genre')
 export class GenreController {
   constructor(private readonly genreService: GenreService) {}

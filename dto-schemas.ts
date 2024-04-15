@@ -97,4 +97,24 @@ export const DTO_Schemas = {
     required: ['name'],
     additionalProperties: false,
   },
+  MovieCreateDTO: {
+    type: 'object',
+    properties: {
+      name: {
+        type: 'string',
+      },
+      duration: {
+        type: 'integer',
+      },
+      genreIds: {
+        type: 'array',
+        items: {
+          type: 'integer',
+        },
+        minItems: 1,
+      },
+    },
+    required: ['name', 'duration', 'genreIds'],
+    additionalProperties: false,
+  },
 };

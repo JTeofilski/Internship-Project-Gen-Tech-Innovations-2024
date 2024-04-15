@@ -1,5 +1,6 @@
 import {
   Column,
+  DeleteDateColumn,
   Entity,
   ManyToMany,
   OneToMany,
@@ -19,12 +20,12 @@ export class Movie {
   @Column()
   duration: number;
 
-  @Column()
-  disabled: boolean = false;
-
   @OneToMany(() => MovieScreening, (movieScreening) => movieScreening.movie)
   movieScreenings: MovieScreening[];
 
   @ManyToMany(() => Genre, (genre) => genre.movies)
   genres: Genre[];
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }
