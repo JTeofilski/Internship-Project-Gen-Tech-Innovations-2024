@@ -138,7 +138,7 @@ export const movieScreeningSeeds = [
   {
     id: 5,
     dateAndTime: '2024-04-01T03:12:40Z',
-    status: 'ACTIVE',
+    status: 'CANCELED',
     movieId: 3,
     auditoriumId: 5,
   },

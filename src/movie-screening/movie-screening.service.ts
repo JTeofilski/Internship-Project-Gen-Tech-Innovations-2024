@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -7,6 +8,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { addHours } from 'date-fns';
 import { AuditoriumService } from 'src/auditorium/auditorium.service';
 import { MovieScreening } from 'src/entities/movieScreening.entity';
+import { MovieScreeningTypeEnum } from 'src/enums/movieScreeningType.enum';
+import { GenreService } from 'src/genre/genre.service';
 import MovieScreeningCreateDTO from 'src/movie-screening/dtos/movie-screening.create.dto';
 import MovieScreeningEditDTO from 'src/movie-screening/dtos/movie-screening.edit.dto';
 import { MovieService } from 'src/movie/movie.service';
@@ -19,6 +22,7 @@ export class MovieScreeningService {
     private readonly movieScreeningRepository: Repository<MovieScreening>,
     private readonly movieService: MovieService,
     private readonly auditoriumService: AuditoriumService,
+    private readonly genreService: GenreService,
   ) {}
 
   // isDeleted is false by default
@@ -246,8 +250,8 @@ export class MovieScreeningService {
         .createQueryBuilder('movieScreening')
         .leftJoinAndSelect('movieScreening.movie', 'movie')
         .leftJoinAndSelect('movieScreening.auditorium', 'auditorium')
-        .skip(skip) // Preskoči određeni broj rezultata
-        .take(pageSize) // Uzmi određeni broj rezultata
+        .skip(skip)
+        .take(pageSize)
         .getMany(),
       this.movieScreeningRepository.count(), // Broj ukupnih rezultata
     ]);
@@ -282,5 +286,46 @@ export class MovieScreeningService {
       );
     }
     await this.movieScreeningRepository.recover(existing);
+  }
+
+  async getActiveMovieScreenings(): Promise<MovieScreening[]> {
+    const temp = await this.getMovieScreenings();
+    const ret: MovieScreening[] = [];
+    for (let i = 0; i < temp.movieScreenings.length; i++) {
+      if (temp.movieScreenings[i].status === MovieScreeningTypeEnum.ACTIVE) {
+        ret.push(temp.movieScreenings[i]);
+      }
+    }
+    return ret;
+  }
+
+  async getActiveMovieScreeningsForOneGenre(
+    genreId: number,
+  ): Promise<MovieScreening[]> {
+    const unavailableGenres =
+      await this.genreService.adminGetsUnavailableGenres();
+    const isInUnavailable = unavailableGenres.some(
+      (genre) => genre.id === genreId,
+    );
+    if (isInUnavailable) {
+      throw new ForbiddenException(
+        `GENRE WITH PROVIDED ID:${genreId} IS UNAVAILABLE. YOU CAN ENABLE IT.`,
+      );
+    }
+
+    const moviesScreenings = await this.movieScreeningRepository
+      .createQueryBuilder('movieScreening')
+      .innerJoinAndSelect('movieScreening.movie', 'movie')
+      .innerJoin('movie.genres', 'genre')
+      .where('genre.id = :genreId', { genreId })
+      .getMany();
+
+    const ret: MovieScreening[] = [];
+    for (let i = 0; i < moviesScreenings.length; i++) {
+      if (moviesScreenings[i].status === MovieScreeningTypeEnum.ACTIVE) {
+        ret.push(moviesScreenings[i]);
+      }
+    }
+    return ret;
   }
 }

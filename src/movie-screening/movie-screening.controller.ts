@@ -73,4 +73,22 @@ export class MovieScreeningController {
   async restoreMovieScreening(@Param('id') id: number) {
     await this.movieScreeningService.restoreMovieScreening(id);
   }
+
+  @UseGuards(AuthenticatedGuard, UserTypeGuard)
+  @UserType(UserTypeEnum.CUSTOMER)
+  @Get('active-for-customer')
+  async getActiveMovieScreenings(): Promise<MovieScreening[]> {
+    return this.movieScreeningService.getActiveMovieScreenings();
+  }
+
+  @UseGuards(AuthenticatedGuard, UserTypeGuard)
+  @UserType(UserTypeEnum.CUSTOMER)
+  @Get('filter-one-genre/:id')
+  async getActiveMovieScreeningsForOneGenre(
+    @Param('id') id: number,
+  ): Promise<MovieScreening[]> {
+    return await this.movieScreeningService.getActiveMovieScreeningsForOneGenre(
+      id,
+    );
+  }
 }
