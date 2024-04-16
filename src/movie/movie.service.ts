@@ -92,7 +92,7 @@ export class MovieService {
       }
     }
 
-    const allGenres = await this.genreService.adminGetsAllGenres();
+    const allGenres = (await this.genreService.getAllGenres()).genres;
 
     for (const genreId of movieCreateDTO.genreIds) {
       const genre = allGenres.find((genre) => genre.id === genreId);

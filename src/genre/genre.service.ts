@@ -28,8 +28,16 @@ export class GenreService {
     return genres;
   }
 
-  async adminGetsAllGenres(): Promise<Genre[]> {
-    return await this.genreRepository.find();
+  async getAllGenres(
+    page: number = 1,
+    pageSize: number = 100,
+  ): Promise<{ genres: Genre[]; totalCount: number }> {
+    const [genres, totalCount] = await this.genreRepository.findAndCount({
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+
+    return { genres, totalCount };
   }
 
   async adminGetsAvailableGenres(): Promise<Genre[]> {

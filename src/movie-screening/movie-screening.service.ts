@@ -235,14 +235,24 @@ export class MovieScreeningService {
     return await this.movieScreeningRepository.save(movieScreening);
   }
 
-  async adminGetsMovieScreenings(): Promise<MovieScreening[]> {
-    const movieScreenings = await this.movieScreeningRepository
-      .createQueryBuilder('movieScreening')
-      .leftJoinAndSelect('movieScreening.movie', 'movie')
-      .leftJoinAndSelect('movieScreening.auditorium', 'auditorium')
-      .getMany();
+  async getMovieScreenings(
+    page: number = 1,
+    pageSize: number = 100,
+  ): Promise<{ movieScreenings: MovieScreening[]; totalCount: number }> {
+    const skip = (page - 1) * pageSize;
 
-    return movieScreenings;
+    const [movieScreenings, totalCount] = await Promise.all([
+      this.movieScreeningRepository
+        .createQueryBuilder('movieScreening')
+        .leftJoinAndSelect('movieScreening.movie', 'movie')
+        .leftJoinAndSelect('movieScreening.auditorium', 'auditorium')
+        .skip(skip) // Preskoči određeni broj rezultata
+        .take(pageSize) // Uzmi određeni broj rezultata
+        .getMany(),
+      this.movieScreeningRepository.count(), // Broj ukupnih rezultata
+    ]);
+
+    return { movieScreenings, totalCount };
   }
 
   async softDeleteMovieScreening(id: number): Promise<MovieScreening> {

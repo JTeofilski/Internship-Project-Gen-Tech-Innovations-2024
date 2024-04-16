@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthenticatedGuard } from 'src/auth/guards/authenticated.guard';
@@ -25,7 +26,7 @@ export class MovieScreeningController {
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.ADMIN)
-  @Post('create-ms')
+  @Post('create')
   async adminCreatesMovieScreening(
     @Body() movieScreeningDTO: MovieScreeningCreateDTO,
   ): Promise<MovieScreening> {
@@ -49,9 +50,12 @@ export class MovieScreeningController {
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.ADMIN)
-  @Get('get-ms')
-  async adminGetsMovieScreenings(): Promise<MovieScreening[]> {
-    return await this.movieScreeningService.adminGetsMovieScreenings();
+  @Get('all')
+  async getMovieScreenings(
+    @Query('page') page: number = 1,
+    @Query('pageSize') pageSize: number = 10,
+  ): Promise<{ movieScreenings: MovieScreening[]; totalCount: number }> {
+    return await this.movieScreeningService.getMovieScreenings(page, pageSize);
   }
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)

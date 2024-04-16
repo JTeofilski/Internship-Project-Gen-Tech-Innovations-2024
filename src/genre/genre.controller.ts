@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { GenreService } from './genre.service';
@@ -24,8 +25,11 @@ export class GenreController {
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.ADMIN)
   @Get('all')
-  async adminGetsAllGenres(): Promise<Genre[]> {
-    return await this.genreService.adminGetsAllGenres();
+  async getAllGenres(
+    @Query('page') page: number = 1,
+    @Query('pageSize') pageSize: number = 10,
+  ): Promise<{ genres: Genre[]; totalCount: number }> {
+    return await this.genreService.getAllGenres(page, pageSize);
   }
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
