@@ -1,24 +1,30 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { MovieScreening } from "./movieScreening.entity";
-import { Seat } from "./seat.entity";
-import { User } from "./user.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { MovieScreening } from './movieScreening.entity';
+import { Seat } from './seat.entity';
+import { User } from './user.entity';
 
 @Entity()
 export class Ticket {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @PrimaryGeneratedColumn()
-    id: number
+  @Column()
+  movieScreeningId: number;
 
-    @Column()
-    price: number
+  @Column()
+  seatId: number;
 
-    @ManyToOne(() => MovieScreening, moviescreening => moviescreening.tickets, { onDelete: 'SET NULL' })
-    movieScreening: MovieScreening
+  @Column()
+  userId: number;
 
-    @ManyToOne(() => Seat, seat => seat.tickets, { onDelete: 'SET NULL' })
-    seat: Seat
+  @ManyToOne(() => MovieScreening, (moviescreening) => moviescreening.tickets, {
+    onDelete: 'SET NULL',
+  })
+  movieScreening: MovieScreening;
 
-    @ManyToOne(() => User, user => user.tickets, { onDelete: 'SET NULL' })
-    user: User
+  @ManyToOne(() => Seat, (seat) => seat.tickets, { onDelete: 'SET NULL' })
+  seat: Seat;
 
+  @ManyToOne(() => User, (user) => user.tickets, { onDelete: 'SET NULL' })
+  user: User;
 }

@@ -117,4 +117,21 @@ export const DTO_Schemas = {
     required: ['name', 'duration', 'genreIds'],
     additionalProperties: false,
   },
+  TicketsBuyingDTO: {
+    type: 'object',
+    properties: {
+      movieScreeningId: {
+        type: 'integer',
+      },
+      seatIds: {
+        type: 'array',
+        items: {
+          type: 'integer',
+        },
+        minItems: 1,
+      },
+    },
+    required: ['movieScreeningId', 'seatIds'],
+    additionalProperties: false,
+  },
 };

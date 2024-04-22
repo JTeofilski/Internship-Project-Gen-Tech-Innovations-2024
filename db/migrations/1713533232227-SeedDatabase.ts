@@ -8,8 +8,8 @@ import { Auditorium } from 'src/entities/auditorium.entity';
 import { movieScreeningSeeds } from 'db/seeds/movie-screening.seeds';
 import { ticketSeeds } from 'db/seeds/ticket.seeds';
 
-export class SeedDatabase1713183150474 implements MigrationInterface {
-  name = 'SeedDatabase1713183150474';
+export class SeedDatabase1713533232227 implements MigrationInterface {
+  name = 'SeedDatabase1713533232227';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.manager.getRepository('Auditorium').save(auditoriumSeeds);

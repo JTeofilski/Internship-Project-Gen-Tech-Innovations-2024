@@ -16,5 +16,6 @@ import { GenreModule } from 'src/genre/genre.module';
   ],
   controllers: [MovieScreeningController],
   providers: [MovieScreeningService],
+  exports: [MovieScreeningService],
 })
 export class MovieScreeningModule {}

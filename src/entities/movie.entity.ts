@@ -20,6 +20,9 @@ export class Movie {
   @Column()
   duration: number;
 
+  @Column()
+  price: number;
+
   @OneToMany(() => MovieScreening, (movieScreening) => movieScreening.movie)
   movieScreenings: MovieScreening[];
 

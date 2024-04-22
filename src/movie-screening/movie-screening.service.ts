@@ -328,4 +328,17 @@ export class MovieScreeningService {
     }
     return ret;
   }
+
+  async seatExists(
+    movieScreeningId: number,
+    seatId: number,
+  ): Promise<MovieScreening> {
+    return await this.movieScreeningRepository
+      .createQueryBuilder('moviescreening')
+      .leftJoinAndSelect('moviescreening.auditorium', 'auditorium')
+      .leftJoinAndSelect('auditorium.seats', 'seats')
+      .where('moviescreening.id=:movieScreeningId', { movieScreeningId })
+      .andWhere('seats.id=:seatId', { seatId })
+      .getOne();
+  }
 }

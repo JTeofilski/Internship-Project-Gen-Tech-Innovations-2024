@@ -31,6 +31,9 @@ export class MovieScreening {
   })
   movie: Movie;
 
+  @Column()
+  auditoriumId: number;
+
   @ManyToOne(() => Auditorium, (auditorium) => auditorium.movieScreenings, {
     onDelete: 'SET NULL',
   })

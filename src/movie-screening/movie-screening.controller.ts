@@ -91,4 +91,17 @@ export class MovieScreeningController {
       id,
     );
   }
+
+  @UseGuards(AuthenticatedGuard, UserTypeGuard)
+  @UserType(UserTypeEnum.CUSTOMER)
+  @Get('seat-exists')
+  async seatExists(
+    @Query('movieScreeningId') movieScreeningId: number,
+    @Query('seatId') seatId: number,
+  ): Promise<MovieScreening> {
+    return await this.movieScreeningService.seatExists(
+      movieScreeningId,
+      seatId,
+    );
+  }
 }

@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Auditorium } from './auditorium.entity';
 import { Ticket } from './ticket.entity';
+import { Expose } from 'class-transformer';
 
 @Entity()
 export class Seat {
@@ -19,6 +20,9 @@ export class Seat {
   @Column()
   column: number;
 
+  @Column()
+  auditoriumId: number;
+
   @ManyToOne(() => Auditorium, (auditorium) => auditorium.seats, {
     onDelete: 'SET NULL',
   })
@@ -27,16 +31,8 @@ export class Seat {
   @OneToMany(() => Ticket, (ticket) => ticket.seat)
   tickets: Ticket[];
 
+  @Expose()
   get isOccupied(): boolean {
-    let result;
-
-    this.auditorium.movieScreenings.forEach((ms) => {
-      ms.tickets.forEach((t) => {
-        result = !!this.tickets.find(
-          (ticket) => ticket.movieScreening.id === t.movieScreening.id,
-        );
-      });
-    });
-    return result;
+    return !!this.tickets?.length;
   }
 }
