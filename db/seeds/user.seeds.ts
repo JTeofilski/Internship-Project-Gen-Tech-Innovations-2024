@@ -11,7 +11,7 @@ export const userSeeds = [
   {
     id: 2,
     fullName: 'test2',
-    email: 'test2@test2.com',
+    email: 'clatest2test2@gmail.com',
     password: hashPassword('test2'),
     userType: 'CUSTOMER',
   },

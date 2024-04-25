@@ -12,8 +12,10 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { MovieScreeningModule } from './movie-screening/movie-screening.module';
 import { TicketModule } from './ticket/ticket.module';
+import { ScheduleModule } from '@nestjs/schedule';
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRoot({
       ...dataSourceOptions,
       extra: {

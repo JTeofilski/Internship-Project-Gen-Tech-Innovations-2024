@@ -117,7 +117,7 @@ export const DTO_Schemas = {
     required: ['name', 'duration', 'genreIds'],
     additionalProperties: false,
   },
-  TicketsBuyingDTO: {
+  TicketsBuyingOrReservationDTO: {
     type: 'object',
     properties: {
       movieScreeningId: {

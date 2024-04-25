@@ -1,6 +1,6 @@
 import { IsArray, IsInt, IsNotEmpty } from 'class-validator';
 
-export default class TicketsBuyingDTO {
+export default class TicketsBuyingOrReservationDTO {
   @IsNotEmpty()
   @IsInt()
   movieScreeningId: number;

@@ -291,8 +291,13 @@ export class MovieScreeningService {
   async getActiveMovieScreenings(): Promise<MovieScreening[]> {
     const temp = await this.getMovieScreenings();
     const ret: MovieScreening[] = [];
+    const currentDateTime = new Date();
+
     for (let i = 0; i < temp.movieScreenings.length; i++) {
-      if (temp.movieScreenings[i].status === MovieScreeningTypeEnum.ACTIVE) {
+      if (
+        temp.movieScreenings[i].status === MovieScreeningTypeEnum.ACTIVE &&
+        temp.movieScreenings[i].dateAndTime > currentDateTime
+      ) {
         ret.push(temp.movieScreenings[i]);
       }
     }
@@ -321,8 +326,12 @@ export class MovieScreeningService {
       .getMany();
 
     const ret: MovieScreening[] = [];
+    const currentDateTime = new Date();
     for (let i = 0; i < moviesScreenings.length; i++) {
-      if (moviesScreenings[i].status === MovieScreeningTypeEnum.ACTIVE) {
+      if (
+        moviesScreenings[i].status === MovieScreeningTypeEnum.ACTIVE &&
+        moviesScreenings[i].dateAndTime > currentDateTime
+      ) {
         ret.push(moviesScreenings[i]);
       }
     }
