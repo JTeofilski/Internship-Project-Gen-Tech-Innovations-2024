@@ -5,8 +5,8 @@ import { Ticket } from 'src/entities/ticket.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MovieScreeningModule } from 'src/movie-screening/movie-screening.module';
 import { User } from 'src/entities/user.entity';
-import { CronService } from 'cron/cron.service';
 import { MovieScreening } from 'src/entities/movieScreening.entity';
+import { EmailService } from 'email/email.service';
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import { MovieScreening } from 'src/entities/movieScreening.entity';
     MovieScreeningModule,
   ],
   controllers: [TicketController],
-  providers: [TicketService, CronService],
+  providers: [TicketService, /*CronService,*/ EmailService],
   exports: [TicketService],
 })
 export class TicketModule {}

@@ -12,6 +12,7 @@ import * as nodemailer from 'nodemailer';
 import { User } from 'src/entities/user.entity';
 import { MovieScreening } from 'src/entities/movieScreening.entity';
 import 'dotenv/config';
+import { EmailService } from 'email/email.service';
 
 @Injectable()
 export class TicketService {
@@ -23,6 +24,7 @@ export class TicketService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(MovieScreening)
     private readonly movieScreeningRepository: Repository<MovieScreening>,
+    private emailService: EmailService,
   ) {}
 
   async buyOrReserveTickets(
@@ -149,7 +151,7 @@ export class TicketService {
     }
   }
 
-  async sendEmail(
+  /*async sendEmail(
     userEmail: string,
     subject: string,
     message: string,
@@ -174,7 +176,7 @@ export class TicketService {
 
     await transporter.sendMail(mailOptions);
     console.log('Email sent successfully');
-  }
+  }*/
 
   async sendReservationEmail(
     userEmail: string,
@@ -182,7 +184,7 @@ export class TicketService {
   ): Promise<void> {
     console.log('TICKET RESERVED:');
     const reservationText = JSON.stringify(reservationDetails);
-    await this.sendEmail(
+    await this.emailService.sendEmail(
       userEmail,
       'Ticket Reservation Details from CINEMA-API',
       reservationText,
@@ -196,7 +198,7 @@ export class TicketService {
     console.log('TICKET EXPIRED:');
     const user = await this.userRepository.findOne({ where: { id: userId } });
     const reservationText = JSON.stringify(ticket);
-    await this.sendEmail(
+    await this.emailService.sendEmail(
       user.email,
       'Expired Ticket Reservation from CINEMA-API ',
       reservationText,

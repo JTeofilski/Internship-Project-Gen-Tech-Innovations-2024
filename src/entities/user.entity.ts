@@ -26,6 +26,9 @@ export class User {
   })
   userType: UserTypeEnum;
 
+  @Column({ nullable: true })
+  resetCode: string;
+
   @OneToMany(() => Ticket, (ticket) => ticket.user)
   tickets: Ticket[];
 

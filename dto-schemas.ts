@@ -1,4 +1,7 @@
+import { minLength } from 'class-validator';
 import { MovieScreeningTypeEnum } from 'src/enums/movieScreeningType.enum';
+import ForgottenPasswordDTO from 'src/user/dtos/forgotten.password.dto';
+import { ResetPasswordDTO } from 'src/user/dtos/reset.password.dto';
 
 export const DTO_Schemas = {
   UserRegistrationDTO: {
@@ -132,6 +135,32 @@ export const DTO_Schemas = {
       },
     },
     required: ['movieScreeningId', 'seatIds'],
+    additionalProperties: false,
+  },
+  ForgottenPasswordDTO: {
+    type: 'object',
+    properties: {
+      email: {
+        type: 'string',
+        minLength: 1,
+      },
+    },
+    required: ['email'],
+    additionalProperties: false,
+  },
+  ResetPasswordDTO: {
+    type: 'object',
+    properties: {
+      email: {
+        type: 'string',
+        minLength: 1,
+      },
+      newPassword: {
+        type: 'string',
+        minLength: 1,
+      },
+    },
+    required: ['email', 'newPassword'],
     additionalProperties: false,
   },
 };
