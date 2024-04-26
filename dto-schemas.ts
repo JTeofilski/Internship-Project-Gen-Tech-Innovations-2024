@@ -1,5 +1,6 @@
 import { minLength } from 'class-validator';
 import { MovieScreeningTypeEnum } from 'src/enums/movieScreeningType.enum';
+import { ChangePasswordDTO } from 'src/user/dtos/change.password.dto';
 import ForgottenPasswordDTO from 'src/user/dtos/forgotten.password.dto';
 import { ResetPasswordDTO } from 'src/user/dtos/reset.password.dto';
 
@@ -161,6 +162,17 @@ export const DTO_Schemas = {
       },
     },
     required: ['email', 'newPassword'],
+    additionalProperties: false,
+  },
+  ChangePasswordDTO: {
+    type: 'object',
+    properties: {
+      newPassword: {
+        type: 'string',
+        minLength: 1,
+      },
+    },
+    required: ['newPassword'],
     additionalProperties: false,
   },
 };

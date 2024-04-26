@@ -17,6 +17,7 @@ import { ApiTags } from '@nestjs/swagger';
 import ForgottenPasswordDTO from 'src/user/dtos/forgotten.password.dto';
 import { ResetPasswordDTO } from 'src/user/dtos/reset.password.dto';
 import { request } from 'http';
+import { ChangePasswordDTO } from 'src/user/dtos/change.password.dto';
 
 @ApiTags('Users')
 @Controller('user')
@@ -47,14 +48,26 @@ export class UserController {
     return await this.userService.forgottenPassword(forgottenPasswordDTO.email);
   }
 
-  @Post('reset-password')
+  @Post('reset-password/:id')
   async resetPassword(
     @Body() resetPasswordDTO: ResetPasswordDTO,
-    @Req() request,
+    @Param('id') id: number,
   ): Promise<any> {
     return await this.userService.resetPassword(
       resetPasswordDTO.resetCode,
       resetPasswordDTO.newPassword,
+      id,
+    );
+  }
+
+  @UseGuards(AuthenticatedGuard, UserTypeGuard)
+  @Post('change-password')
+  async changePassword(
+    @Body() changePasswordDTO: ChangePasswordDTO,
+    @Req() request,
+  ): Promise<any> {
+    return await this.userService.changePassword(
+      changePasswordDTO.newPassword,
       request.user.id,
     );
   }

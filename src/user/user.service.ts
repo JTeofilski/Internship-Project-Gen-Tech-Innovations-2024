@@ -83,7 +83,8 @@ export class UserService {
 
     const subject = 'Reset Code';
     const message = `Reset Code: ${resetCode}`;
-    return await this.emailService.sendEmail(email, subject, message);
+    await this.emailService.sendEmail(email, subject, message);
+    return 'CHECK YOUR EMAIL TO SEE THE RESET CODE';
   }
 
   async resetPassword(
@@ -96,7 +97,9 @@ export class UserService {
     });
 
     if (!user) {
-      throw new NotFoundException('RESET CODE: WRONG');
+      throw new NotFoundException(
+        `RESET CODE: WRONG OR USER WITH ID: ${userId} NOT FOUND`,
+      );
     }
 
     user.password = newPassword;
@@ -104,7 +107,17 @@ export class UserService {
 
     const subject = 'Password Reset Successful';
     const message = 'Your password has been successfully reset.';
-    return await this.emailService.sendEmail(user.email, subject, message);
+    await this.emailService.sendEmail(user.email, subject, message);
+    return 'YOUR PASSWORD HAS BEEN SUCCESSFULLY RESET';
+  }
+
+  async changePassword(newPassword: string, userId: number): Promise<any> {
+    const user = await this.userRepository.findOne({ where: { id: userId } }); // it has to be found, because it is logged in
+
+    user.password = newPassword;
+    await this.userRepository.save(user);
+
+    return 'YOUR PASSWORD HAS BEEN SUCCESSFULLY CHANGED';
   }
 
   private generateResetCode(): string {
