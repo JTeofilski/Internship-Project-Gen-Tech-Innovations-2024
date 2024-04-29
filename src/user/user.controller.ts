@@ -16,7 +16,6 @@ import { UserTypeGuard } from 'src/auth/guards/user-type.guard';
 import { ApiTags } from '@nestjs/swagger';
 import ForgottenPasswordDTO from 'src/user/dtos/forgotten.password.dto';
 import { ResetPasswordDTO } from 'src/user/dtos/reset.password.dto';
-import { request } from 'http';
 import { ChangePasswordDTO } from 'src/user/dtos/change.password.dto';
 
 @ApiTags('Users')

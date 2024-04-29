@@ -27,10 +27,10 @@ export class MovieScreeningController {
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.ADMIN)
   @Post('create')
-  async adminCreatesMovieScreening(
+  async createMovieScreening(
     @Body() movieScreeningDTO: MovieScreeningCreateDTO,
   ): Promise<MovieScreening> {
-    return await this.movieScreeningService.adminCreatesMovieScreening(
+    return await this.movieScreeningService.createMovieScreening(
       movieScreeningDTO,
     );
   }
@@ -38,11 +38,11 @@ export class MovieScreeningController {
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.ADMIN)
   @Patch(':id')
-  async adminEditsMovieScreening(
+  async editMovieScreening(
     @Param('id') id: number,
     @Body() movieScreeningDTO: MovieScreeningEditDTO,
   ): Promise<MovieScreening> {
-    return await this.movieScreeningService.adminEditsMovieScreening(
+    return await this.movieScreeningService.editMovieScreening(
       id,
       movieScreeningDTO,
     );
@@ -76,7 +76,7 @@ export class MovieScreeningController {
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.CUSTOMER)
-  @Get('active-for-customer')
+  @Get('active')
   async getActiveMovieScreenings(): Promise<MovieScreening[]> {
     return this.movieScreeningService.getActiveMovieScreenings();
   }

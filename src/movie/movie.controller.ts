@@ -35,7 +35,6 @@ export class MovieController {
     if (parsedIds.some(isNaN)) {
       throw new BadRequestException('NaN');
     }
-    console.log(parsedIds);
     return await this.movieService.filterMoviesMoreGenres(parsedIds);
   }
 
@@ -73,15 +72,15 @@ export class MovieController {
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.ADMIN)
   @Delete('soft-delete/:id')
-  async softDeleteMovie(@Param('id') id: number) {
-    await this.movieService.softDeleteMovie(id);
+  async softDeleteMovie(@Param('id') id: number): Promise<any> {
+    return await this.movieService.softDeleteMovie(id);
   }
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.ADMIN)
   @Post('restore/:id')
-  async restoreMovie(@Param('id') id: number) {
-    await this.movieService.restoreMovie(id);
+  async restoreMovie(@Param('id') id: number): Promise<any> {
+    return await this.movieService.restoreMovie(id);
   }
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)

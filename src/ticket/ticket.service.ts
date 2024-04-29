@@ -8,7 +8,6 @@ import { Ticket } from 'src/entities/ticket.entity';
 import { TicketType } from 'src/enums/ticketType.enum';
 import { MovieScreeningService } from 'src/movie-screening/movie-screening.service';
 import { LessThan, Repository } from 'typeorm';
-import * as nodemailer from 'nodemailer';
 import { User } from 'src/entities/user.entity';
 import { MovieScreening } from 'src/entities/movieScreening.entity';
 import 'dotenv/config';
@@ -150,33 +149,6 @@ export class TicketService {
       await this.sendReservationExpiredEmail(ticket.userId, ticket);
     }
   }
-
-  /*async sendEmail(
-    userEmail: string,
-    subject: string,
-    message: string,
-  ): Promise<void> {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.TRANSPORTER_USER,
-        pass: process.env.TRANSPORTER_PASS,
-      },
-    });
-
-    const mailOptions = {
-      from: process.env.TRANSPORTER_USER,
-      to: userEmail,
-      subject: subject,
-      text: message,
-    };
-
-    await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully');
-  }*/
 
   async sendReservationEmail(
     userEmail: string,

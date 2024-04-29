@@ -40,15 +40,15 @@ export class GenreService {
     return { genres, totalCount };
   }
 
-  async adminGetsAvailableGenres(): Promise<Genre[]> {
+  async getAvailableGenres(): Promise<Genre[]> {
     return await this.genreRepository.find({ where: { isDeleted: false } });
   }
 
-  async adminGetsUnavailableGenres(): Promise<Genre[]> {
+  async getUnavailableGenres(): Promise<Genre[]> {
     return await this.genreRepository.find({ where: { isDeleted: true } });
   }
 
-  async adminGetsOneGenre(id: number): Promise<Genre> {
+  async getOneGenre(id: number): Promise<Genre> {
     const existing = await this.findOneById(id);
     if (!existing) {
       throw new NotFoundException('GENRE WITH PROVIDED ID NOT FOUND');
@@ -56,11 +56,11 @@ export class GenreService {
     return existing;
   }
 
-  async adminGetsAllGenresWithMovies(): Promise<Genre[]> {
+  async getAllGenresWithMovies(): Promise<Genre[]> {
     return await this.genreRepository.find({ relations: ['movies'] });
   }
 
-  async adminDisablesGenre(id: number): Promise<Genre> {
+  async disableGenre(id: number): Promise<Genre> {
     const existing = await this.findOneById(id);
 
     if (!existing) {
@@ -68,7 +68,7 @@ export class GenreService {
         'GENRE WITH PROVIDED ID DOES NOT EXIST IN THE DATABASE',
       );
     } else if (existing) {
-      const disabled = await this.adminGetsUnavailableGenres();
+      const disabled = await this.getUnavailableGenres();
       const isInDisabled = disabled.some((genre) => genre.id === existing.id);
       if (isInDisabled) {
         throw new ForbiddenException('GENRE WITH PROVIDED ID ALREADY DISABLED');
@@ -79,7 +79,7 @@ export class GenreService {
     }
   }
 
-  async adminEnablesGenre(id: number): Promise<Genre> {
+  async enableGenre(id: number): Promise<Genre> {
     const existing = await this.findOneById(id);
 
     if (!existing) {
@@ -87,7 +87,7 @@ export class GenreService {
         'GENRE WITH PROVIDED ID DOES NOT EXIST IN THE DATABASE',
       );
     } else if (existing) {
-      const enabled = await this.adminGetsAvailableGenres();
+      const enabled = await this.getAvailableGenres();
       const isInEnabled = enabled.some((genre) => genre.id === existing.id);
       if (isInEnabled) {
         throw new ForbiddenException(
@@ -100,7 +100,7 @@ export class GenreService {
     }
   }
 
-  async adminCreatesGenre(genreCreateDTO: GenreCreateDTO): Promise<Genre> {
+  async createGenre(genreCreateDTO: GenreCreateDTO): Promise<Genre> {
     const onlyLetters = /^[a-zA-Z]+$/;
 
     if (!onlyLetters.test(genreCreateDTO.name)) {
@@ -108,8 +108,8 @@ export class GenreService {
     }
 
     const newGenreNameToLowercase = genreCreateDTO.name.toLowerCase();
-    const availabledGenres = await this.adminGetsAvailableGenres();
-    const unavailableGenres = await this.adminGetsUnavailableGenres();
+    const availabledGenres = await this.getAvailableGenres();
+    const unavailableGenres = await this.getUnavailableGenres();
 
     for (let i = 0; i < unavailableGenres.length; i++) {
       const temp = unavailableGenres[i].name.toLowerCase();

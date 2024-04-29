@@ -39,24 +39,22 @@ export class MovieService {
     return { movies, totalCount };
   }
 
-  async softDeleteMovie(id: number) {
+  async softDeleteMovie(id: number): Promise<any> {
     const existing = await this.findOneById(id);
     if (!existing) {
-      throw new NotFoundException(
-        `MOVIE WITH PROVIDED ID: ${id} DOES NOT EXIST.`,
-      );
+      throw new NotFoundException(`MOVIE WITH PROVIDED ID: ${id} NOT FOUND.`);
     }
     await this.movieRepository.softRemove(existing);
+    return 'MOVIE SUCCESSFULLY SOFT-DELETED';
   }
 
-  async restoreMovie(id: number) {
+  async restoreMovie(id: number): Promise<any> {
     const existing = await this.findForRestore(id);
     if (!existing) {
-      throw new NotFoundException(
-        `MOVIE WITH PROVIDED ID: ${id} DOES NOT EXIST.`,
-      );
+      throw new NotFoundException(`MOVIE WITH PROVIDED ID: ${id} NOT FOUND.`);
     }
     await this.movieRepository.recover(existing);
+    return 'MOVIE SUCESSFULLY RESTORED';
   }
 
   async getOneMovie(id: number): Promise<Movie> {
@@ -92,6 +90,7 @@ export class MovieService {
       }
     }
 
+    //Check if genres that are provided exist in the database
     const allGenres = (await this.genreService.getAllGenres()).genres;
 
     for (const genreId of movieCreateDTO.genreIds) {
@@ -103,8 +102,8 @@ export class MovieService {
       }
     }
 
-    const unavailableGenres =
-      await this.genreService.adminGetsUnavailableGenres();
+    //Check if genres that are provided are not a part of unavailable group of genres
+    const unavailableGenres = await this.genreService.getUnavailableGenres();
 
     for (const genreId of movieCreateDTO.genreIds) {
       const genre = unavailableGenres.find((genre) => genre.id === genreId);
@@ -131,8 +130,7 @@ export class MovieService {
   }
 
   async filterMoviesOneGenre(genreId: number): Promise<Movie[]> {
-    const unavailableGenres =
-      await this.genreService.adminGetsUnavailableGenres();
+    const unavailableGenres = await this.genreService.getUnavailableGenres();
     const isInUnavailable = unavailableGenres.some(
       (genre) => genre.id === genreId,
     );
@@ -153,6 +151,19 @@ export class MovieService {
   }
 
   async filterMoviesMoreGenres(parsedIds: number[]): Promise<Movie[]> {
+    const unavailableGenres = await this.genreService.getUnavailableGenres();
+
+    for (const id of parsedIds) {
+      const isInUnavailable = unavailableGenres.some(
+        (unavailableGenre) => unavailableGenre.id === id,
+      );
+
+      if (isInUnavailable) {
+        throw new ForbiddenException(
+          `GENRE WITH PROVIDED ID:${id} IS UNAVAILABLE. YOU CAN ENABLE IT.`,
+        );
+      }
+    }
     return await this.movieRepository
       .createQueryBuilder('movie')
       .innerJoin('genre_movies_movie', 'mg', 'mg.movieId = movie.id')

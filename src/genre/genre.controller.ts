@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   Post,
@@ -35,51 +34,49 @@ export class GenreController {
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.ADMIN)
   @Get('with-movies')
-  async adminGetsAllGenresWithMovies(): Promise<Genre[]> {
-    return this.genreService.adminGetsAllGenresWithMovies();
+  async getAllGenresWithMovies(): Promise<Genre[]> {
+    return this.genreService.getAllGenresWithMovies();
   }
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.ADMIN)
   @Get('available')
-  async adminGetsAvailableGenres(): Promise<Genre[]> {
-    return await this.genreService.adminGetsAvailableGenres();
+  async getAvailableGenres(): Promise<Genre[]> {
+    return await this.genreService.getAvailableGenres();
   }
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.ADMIN)
   @Get('unavailable')
-  async adminGetsUnavailableGenres(): Promise<Genre[]> {
-    return await this.genreService.adminGetsUnavailableGenres();
+  async getUnavailableGenres(): Promise<Genre[]> {
+    return await this.genreService.getUnavailableGenres();
   }
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.ADMIN)
   @Get(':id')
-  async adminGetsOneGenre(@Param('id') id: number): Promise<Genre> {
-    return await this.genreService.adminGetsOneGenre(id);
+  async getOneGenre(@Param('id') id: number): Promise<Genre> {
+    return await this.genreService.getOneGenre(id);
   }
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.ADMIN)
   @Post('create')
-  async adminCreatesGenre(
-    @Body() genreCreateDTO: GenreCreateDTO,
-  ): Promise<Genre> {
-    return await this.genreService.adminCreatesGenre(genreCreateDTO);
+  async createGenre(@Body() genreCreateDTO: GenreCreateDTO): Promise<Genre> {
+    return await this.genreService.createGenre(genreCreateDTO);
   }
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.ADMIN)
   @Post('enable/:id')
-  async adminEnablesGenre(@Param('id') id: number): Promise<Genre> {
-    return await this.genreService.adminEnablesGenre(id);
+  async enableGenre(@Param('id') id: number): Promise<Genre> {
+    return await this.genreService.enableGenre(id);
   }
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.ADMIN)
-  @Delete('disable/:id')
-  async adminDisablesGenre(@Param('id') id: number): Promise<Genre> {
-    return await this.genreService.adminDisablesGenre(id);
+  @Post('disable/:id')
+  async disableGenre(@Param('id') id: number): Promise<Genre> {
+    return await this.genreService.disableGenre(id);
   }
 }

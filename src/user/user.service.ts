@@ -12,7 +12,6 @@ import { UserSubscriber } from 'src/user/subscribers/user.subscriber';
 import { Repository } from 'typeorm';
 import UserUpdateDTO from 'src/user/dtos/user.update.dto';
 import { EmailService } from 'email/email.service';
-import { use } from 'passport';
 
 @Injectable()
 export class UserService {

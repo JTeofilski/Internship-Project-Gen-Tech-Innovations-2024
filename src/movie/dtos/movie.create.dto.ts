@@ -13,4 +13,8 @@ export default class MovieCreateDTO {
   @IsNotEmpty()
   @IsNumber({}, { each: true })
   genreIds: number[];
+
+  @IsNotEmpty()
+  @IsNumber()
+  price: number;
 }

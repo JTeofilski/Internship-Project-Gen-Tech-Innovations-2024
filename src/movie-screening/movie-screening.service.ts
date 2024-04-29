@@ -25,7 +25,6 @@ export class MovieScreeningService {
     private readonly genreService: GenreService,
   ) {}
 
-  // isDeleted is false by default
   async findOneFromDTO(movieScreeningCreateDTO: MovieScreeningCreateDTO) {
     return await this.movieScreeningRepository.findOne({
       where: {
@@ -94,7 +93,7 @@ export class MovieScreeningService {
     }
   }
 
-  async adminCreatesMovieScreening(
+  async createMovieScreening(
     movieScreeningDTO: MovieScreeningCreateDTO,
   ): Promise<MovieScreening> {
     const existingMovieScreening = await this.findOneFromDTO(movieScreeningDTO);
@@ -149,7 +148,7 @@ export class MovieScreeningService {
     return await this.movieScreeningRepository.findOne({ where: { id } });
   }
 
-  async adminEditsMovieScreening(
+  async editMovieScreening(
     id: number,
     movieScreeningDTO: MovieScreeningEditDTO,
   ): Promise<MovieScreening> {
@@ -307,8 +306,7 @@ export class MovieScreeningService {
   async getActiveMovieScreeningsForOneGenre(
     genreId: number,
   ): Promise<MovieScreening[]> {
-    const unavailableGenres =
-      await this.genreService.adminGetsUnavailableGenres();
+    const unavailableGenres = await this.genreService.getUnavailableGenres();
     const isInUnavailable = unavailableGenres.some(
       (genre) => genre.id === genreId,
     );

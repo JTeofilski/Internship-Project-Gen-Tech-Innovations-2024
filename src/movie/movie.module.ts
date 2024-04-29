@@ -6,7 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { GenreModule } from 'src/genre/genre.module';
 
 @Module({
-  imports: [GenreModule, TypeOrmModule.forFeature([Movie])],
+  imports: [GenreModule, TypeOrmModule.forFeature([Movie])], // GenreService is exported in GenreModule, that is why I have to import GenreModule if I want to use GenreService
   controllers: [MovieController],
   providers: [MovieService],
   exports: [MovieService],
