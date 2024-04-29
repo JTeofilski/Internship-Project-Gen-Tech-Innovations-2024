@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Post,
   Req,
@@ -45,5 +46,12 @@ export class TicketController {
     @Req() request,
   ): Promise<any> {
     return await this.ticketService.cancelReservation(id, request.user.id);
+  }
+
+  @UseGuards(AuthenticatedGuard, UserTypeGuard)
+  @UserType(UserTypeEnum.CUSTOMER)
+  @Get('total-price/:id')
+  async getTotalPrice(@Param('id') id: number, @Req() request): Promise<any> {
+    return this.ticketService.getTotalPrice(id, request.user.id);
   }
 }

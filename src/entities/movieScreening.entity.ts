@@ -26,6 +26,9 @@ export class MovieScreening {
   })
   status: MovieScreeningTypeEnum;
 
+  @Column()
+  movieId: number;
+
   @ManyToOne(() => Movie, (movie) => movie.movieScreenings, {
     onDelete: 'SET NULL',
   })

@@ -176,4 +176,27 @@ export class TicketService {
       reservationText,
     );
   }
+
+  async getTotalPrice(movieScreeningId: number, userId): Promise<any> {
+    const ms = await this.movieScreeningRepository.findOne({
+      where: { id: movieScreeningId },
+    });
+
+    const movieId = ms.movieId;
+
+    const temp = await this.ticketRepository
+      .createQueryBuilder('ticket')
+      .leftJoinAndSelect('ticket.user', 'user')
+      .leftJoinAndSelect('ticket.movieScreening', 'movie-screening')
+      .leftJoinAndSelect('movie-screening.movie', 'movie')
+      .where('user.id=:userId', { userId })
+      .where('movie-screening.id=:movieScreeningId ', { movieScreeningId })
+      .where('movie.id=:movieId', { movieId })
+      .getMany();
+
+    const numberofTickets = temp.length;
+    const price = temp[0].movieScreening.movie.price;
+    const sum = numberofTickets * price;
+    return `TOTAL PRICE FOR ${numberofTickets} TICKETS, WITH PRICE OF ${price} IS: ${sum}`;
+  }
 }
