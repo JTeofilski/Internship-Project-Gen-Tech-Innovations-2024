@@ -171,4 +171,17 @@ export class MovieService {
       .where('g.id IN (:...genreIds)', { genreIds: parsedIds })
       .getMany();
   }
+
+  async firstLetterFilter(letter: string): Promise<Movie[]> {
+    const allMovies = await this.getAllMovies();
+    const ret = [];
+
+    for (let i = 0; i < allMovies.movies.length; i++) {
+      const temp = allMovies.movies[i].name.toLowerCase();
+      if (temp[0] === letter.toLowerCase()) {
+        ret.push(allMovies.movies[i]);
+      }
+    }
+    return ret;
+  }
 }

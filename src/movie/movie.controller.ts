@@ -8,6 +8,7 @@ import {
   Post,
   Query,
   UseGuards,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthenticatedGuard } from 'src/auth/guards/authenticated.guard';
@@ -15,6 +16,7 @@ import { UserTypeGuard } from 'src/auth/guards/user-type.guard';
 import { UserType } from 'src/auth/user-type.decorator';
 import { Movie } from 'src/entities/movie.entity';
 import { UserTypeEnum } from 'src/enums/userType.enum';
+import { FirtsLetterFilterDTO } from 'src/movie/dtos/first.letter.filter.dto';
 import MovieCreateDTO from 'src/movie/dtos/movie.create.dto';
 import { MovieService } from 'src/movie/movie.service';
 
@@ -22,6 +24,15 @@ import { MovieService } from 'src/movie/movie.service';
 @Controller('movie')
 export class MovieController {
   constructor(private readonly movieService: MovieService) {}
+
+  @UseGuards(AuthenticatedGuard, UserTypeGuard)
+  @UserType(UserTypeEnum.ADMIN)
+  @Get('letter')
+  async firstLetterFilter(
+    @Query(ValidationPipe) query: FirtsLetterFilterDTO,
+  ): Promise<Movie[]> {
+    return await this.movieService.firstLetterFilter(query.letter);
+  }
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.ADMIN)
