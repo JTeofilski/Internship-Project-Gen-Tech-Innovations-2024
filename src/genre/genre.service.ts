@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Genre } from 'src/entities/genre.entity';
 import GenreCreateDTO from 'src/genre/dtos/genre.create.dto';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 @Injectable()
 export class GenreService {
@@ -46,6 +46,15 @@ export class GenreService {
 
   async getUnavailableGenres(): Promise<Genre[]> {
     return await this.genreRepository.find({ where: { isDeleted: true } });
+  }
+
+  async getUnavailableGenresParsedIds(parsedIds: number[]): Promise<Genre[]> {
+    return await this.genreRepository.find({
+      where: {
+        isDeleted: true,
+        id: In(parsedIds),
+      },
+    });
   }
 
   async getOneGenre(id: number): Promise<Genre> {

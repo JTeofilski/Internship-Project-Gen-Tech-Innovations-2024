@@ -151,19 +151,20 @@ export class MovieService {
   }
 
   async filterMoviesMoreGenres(parsedIds: number[]): Promise<Movie[]> {
-    const unavailableGenres = await this.genreService.getUnavailableGenres();
+    const unavailable =
+      await this.genreService.getUnavailableGenresParsedIds(parsedIds);
 
-    for (const id of parsedIds) {
-      const isInUnavailable = unavailableGenres.some(
-        (unavailableGenre) => unavailableGenre.id === id,
+    const unavailableItems: string[] = [];
+    unavailable.forEach((u) => {
+      unavailableItems.push(
+        `GENRE WITH PROVIDED ID:${u.id}( ${u.name} )IS UNAVAILABLE. YOU CAN ENABLE IT.`,
       );
+    });
 
-      if (isInUnavailable) {
-        throw new ForbiddenException(
-          `GENRE WITH PROVIDED ID:${id} IS UNAVAILABLE. YOU CAN ENABLE IT.`,
-        );
-      }
+    if (unavailableItems.length > 0) {
+      throw new ForbiddenException(unavailableItems.join());
     }
+
     return await this.movieRepository
       .createQueryBuilder('movie')
       .innerJoin('genre_movies_movie', 'mg', 'mg.movieId = movie.id')
