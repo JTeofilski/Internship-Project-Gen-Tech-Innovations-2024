@@ -1,3 +1,4 @@
+import { maxLength, minLength } from 'class-validator';
 import { MovieScreeningTypeEnum } from 'src/enums/movieScreeningType.enum';
 
 export const DTO_Schemas = {
@@ -172,6 +173,31 @@ export const DTO_Schemas = {
       },
     },
     required: ['newPassword'],
+    additionalProperties: false,
+  },
+  FirtsLetterFilterDTO: {
+    type: 'object',
+    properties: {
+      letter: {
+        type: 'string',
+        minLength: 1,
+        maxLength: 1,
+        pattern: '^[a-zA-Z]$',
+      },
+    },
+    required: ['letter'],
+    additionalProperties: false,
+  },
+  SubstringFilterDTO: {
+    type: 'object',
+    properties: {
+      word: {
+        type: 'string',
+        minLength: 1,
+        pattern: '^[a-zA-Z]$',
+      },
+    },
+    required: ['word'],
     additionalProperties: false,
   },
 };

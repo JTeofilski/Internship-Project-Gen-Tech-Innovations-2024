@@ -173,15 +173,18 @@ export class MovieService {
   }
 
   async firstLetterFilter(letter: string): Promise<Movie[]> {
-    const allMovies = await this.getAllMovies();
-    const ret = [];
+    return await this.movieRepository
+      .createQueryBuilder('movie')
+      .where('LOWER(SUBSTRING(movie.name, 1, 1)) = LOWER(:letter)', { letter })
+      .getMany();
+  }
 
-    for (let i = 0; i < allMovies.movies.length; i++) {
-      const temp = allMovies.movies[i].name.toLowerCase();
-      if (temp[0] === letter.toLowerCase()) {
-        ret.push(allMovies.movies[i]);
-      }
-    }
-    return ret;
+  async substringFilter(word: string): Promise<any> {
+    return await this.movieRepository
+      .createQueryBuilder('movie')
+      .where('LOWER(movie.name) LIKE LOWER(:substring)', {
+        substring: `%${word}%`,
+      })
+      .getMany();
   }
 }

@@ -18,12 +18,20 @@ import { Movie } from 'src/entities/movie.entity';
 import { UserTypeEnum } from 'src/enums/userType.enum';
 import { FirtsLetterFilterDTO } from 'src/movie/dtos/first.letter.filter.dto';
 import MovieCreateDTO from 'src/movie/dtos/movie.create.dto';
+import { SubstringFilterDTO } from 'src/movie/dtos/substring.filter.dto';
 import { MovieService } from 'src/movie/movie.service';
 
 @ApiTags('Movies')
 @Controller('movie')
 export class MovieController {
   constructor(private readonly movieService: MovieService) {}
+
+  @UseGuards(AuthenticatedGuard, UserTypeGuard)
+  @UserType(UserTypeEnum.ADMIN)
+  @Get('substring')
+  async substringFilter(@Query() query: SubstringFilterDTO): Promise<any> {
+    return await this.movieService.substringFilter(query.word);
+  }
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.ADMIN)
