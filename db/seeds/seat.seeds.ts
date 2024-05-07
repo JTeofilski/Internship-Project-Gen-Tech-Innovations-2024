@@ -4,6 +4,7 @@ export const seatSeeds = [
     row: 1,
     column: 1,
     auditoriumId: 2,
+    percentage: 2,
   },
   {
     id: 2,

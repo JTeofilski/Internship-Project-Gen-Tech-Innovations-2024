@@ -33,4 +33,15 @@ export class SeatService {
       .getMany();
     return seats;
   }
+
+  async calculatedPrice(): Promise<any> {
+    const allSeatsFromDB = await this.seatRepository
+      .createQueryBuilder('seat')
+      .leftJoinAndSelect('seat.auditorium', 'auditorium')
+      .leftJoinAndSelect('auditorium.movieScreenings', 'ms')
+      .leftJoinAndSelect('ms.movie', 'movie')
+      .getMany();
+
+    return allSeatsFromDB;
+  }
 }

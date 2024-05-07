@@ -14,6 +14,13 @@ export class SeatController {
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.CUSTOMER)
+  @Get('percentage')
+  async calculatedPrice(): Promise<any> {
+    return await this.seatService.calculatedPrice();
+  }
+
+  @UseGuards(AuthenticatedGuard, UserTypeGuard)
+  @UserType(UserTypeEnum.CUSTOMER)
   @Get(':id')
   async getSeats(@Param('id') id: number): Promise<any> {
     return await this.seatService.getSeats(id);
