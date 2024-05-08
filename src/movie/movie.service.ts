@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Movie } from 'src/entities/movie.entity';
 import { GenreService } from 'src/genre/genre.service';
 import MovieCreateDTO from 'src/movie/dtos/movie.create.dto';
+import { SeatDTO } from 'src/seat/seat.dto';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -187,5 +188,46 @@ export class MovieService {
         substring: `%${word}%`,
       })
       .getMany();
+  }
+
+  async calculatePrice(movieId: number): Promise<any> {
+    const movies = await this.movieRepository
+      .createQueryBuilder('movie')
+      .leftJoinAndSelect('movie.movieScreenings', 'ms')
+      .leftJoinAndSelect('ms.auditorium', 'auditorium')
+      .leftJoinAndSelect('auditorium.seats', 'seats')
+      .where('movie.id = :movieId', { movieId })
+      .getMany();
+
+    const seatDtos: SeatDTO[] = [];
+    movies.forEach((movie) => {
+      movie.movieScreenings.forEach((screening) => {
+        screening.auditorium.seats.forEach((seat) => {
+          let calculatedPrice = 0;
+          const onePercent = movie.price / 100;
+
+          if (seat.percentage == 1) {
+            calculatedPrice = movie.price + 5 * onePercent;
+          } else if (seat.percentage == 2) {
+            calculatedPrice = movie.price - 5 * onePercent;
+          }
+
+          const seatDto = new SeatDTO(
+            seat.id,
+            seat.row,
+            seat.column,
+            seat.auditoriumId,
+            movie.id,
+            screening.id,
+            seat.percentage,
+            movie.price,
+            calculatedPrice,
+          );
+          seatDtos.push(seatDto);
+        });
+      });
+    });
+
+    return seatDtos;
   }
 }

@@ -108,4 +108,11 @@ export class MovieController {
   async createMovie(@Body() genreCreateDTO: MovieCreateDTO): Promise<Movie> {
     return await this.movieService.createMovie(genreCreateDTO);
   }
+
+  @UseGuards(AuthenticatedGuard, UserTypeGuard)
+  @UserType(UserTypeEnum.CUSTOMER)
+  @Get('percentage/:id')
+  async calculatePrice(@Param('id') id: number): Promise<any> {
+    return await this.movieService.calculatePrice(id);
+  }
 }
