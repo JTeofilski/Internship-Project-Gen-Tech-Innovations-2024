@@ -252,13 +252,13 @@ export class MovieScreeningService {
         .skip(skip)
         .take(pageSize)
         .getMany(),
-      this.movieScreeningRepository.count(), // Broj ukupnih rezultata
+      this.movieScreeningRepository.count(),
     ]);
 
     return { movieScreenings, totalCount };
   }
 
-  async softDeleteMovieScreening(id: number): Promise<MovieScreening> {
+  async softDeleteMovieScreening(id: number): Promise<string> {
     const toBeDeletedMS = await this.findOneById(id);
 
     if (!toBeDeletedMS) {
@@ -266,8 +266,9 @@ export class MovieScreeningService {
         'MOVIE-SCREENING WITH PROVIDED ID DOES NOT EXIST IN THE DATABASE',
       );
     } else {
-      return await this.movieScreeningRepository.softRemove(toBeDeletedMS);
+      await this.movieScreeningRepository.softRemove(toBeDeletedMS);
     }
+    return 'MOVIESCREENING SUCESSFULLY DELETED';
   }
 
   async findForRestore(id: number): Promise<MovieScreening | undefined> {
@@ -277,7 +278,7 @@ export class MovieScreeningService {
     });
   }
 
-  async restoreMovieScreening(id: number) {
+  async restoreMovieScreening(id: number): Promise<string> {
     const existing = await this.findForRestore(id);
     if (!existing) {
       throw new NotFoundException(
@@ -285,6 +286,7 @@ export class MovieScreeningService {
       );
     }
     await this.movieScreeningRepository.recover(existing);
+    return 'MOVIESCREENING SUCESSFULLY RESTORED';
   }
 
   async getActiveMovieScreenings(): Promise<MovieScreening[]> {

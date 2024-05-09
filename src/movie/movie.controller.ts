@@ -8,7 +8,6 @@ import {
   Post,
   Query,
   UseGuards,
-  ValidationPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthenticatedGuard } from 'src/auth/guards/authenticated.guard';
@@ -20,6 +19,7 @@ import { FirtsLetterFilterDTO } from 'src/movie/dtos/first.letter.filter.dto';
 import MovieCreateDTO from 'src/movie/dtos/movie.create.dto';
 import { SubstringFilterDTO } from 'src/movie/dtos/substring.filter.dto';
 import { MovieService } from 'src/movie/movie.service';
+import { SeatDTO } from 'src/seat/dtos/seat.dto';
 
 @ApiTags('Movies')
 @Controller('movie')
@@ -29,15 +29,15 @@ export class MovieController {
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.ADMIN)
   @Get('substring')
-  async substringFilter(@Query() query: SubstringFilterDTO): Promise<any> {
+  async substringFilter(@Query() query: SubstringFilterDTO): Promise<Movie[]> {
     return await this.movieService.substringFilter(query.word);
   }
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.ADMIN)
-  @Get('letter')
+  @Get('first-letter')
   async firstLetterFilter(
-    @Query(ValidationPipe) query: FirtsLetterFilterDTO,
+    @Query() query: FirtsLetterFilterDTO,
   ): Promise<Movie[]> {
     return await this.movieService.firstLetterFilter(query.letter);
   }
@@ -110,9 +110,8 @@ export class MovieController {
   }
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
-  @UserType(UserTypeEnum.CUSTOMER)
-  @Get('percentage/:id')
-  async calculatePrice(@Param('id') id: number): Promise<any> {
+  @Get('seat-price/:id')
+  async calculatePrice(@Param('id') id: number): Promise<SeatDTO[]> {
     return await this.movieService.calculatePrice(id);
   }
 }

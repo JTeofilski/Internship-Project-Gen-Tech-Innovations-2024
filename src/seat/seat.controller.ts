@@ -15,7 +15,7 @@ export class SeatController {
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.CUSTOMER)
   @Get(':id')
-  async getSeats(@Param('id') id: number): Promise<any> {
+  async getSeats(@Param('id') id: number): Promise<Seat[]> {
     return await this.seatService.getSeats(id);
   }
 }

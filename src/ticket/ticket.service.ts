@@ -7,11 +7,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Ticket } from 'src/entities/ticket.entity';
 import { TicketType } from 'src/enums/ticketType.enum';
 import { MovieScreeningService } from 'src/movie-screening/movie-screening.service';
-import { LessThan, Repository } from 'typeorm';
+import { LessThan, MoreThan, Repository } from 'typeorm';
 import { User } from 'src/entities/user.entity';
 import { MovieScreening } from 'src/entities/movieScreening.entity';
 import 'dotenv/config';
 import { EmailService } from 'email/email.service';
+import { MovieScreeningTypeEnum } from 'src/enums/movieScreeningType.enum';
+import { MovieService } from 'src/movie/movie.service';
+import { SeatDTO } from 'src/seat/dtos/seat.dto';
 
 @Injectable()
 export class TicketService {
@@ -24,14 +27,33 @@ export class TicketService {
     @InjectRepository(MovieScreening)
     private readonly movieScreeningRepository: Repository<MovieScreening>,
     private emailService: EmailService,
+    private movieService: MovieService,
   ) {}
 
   async buyOrReserveTickets(
     actionType: 'buy' | 'reserve',
     movieScreeningId: number,
     seatIds: number[],
-    userId,
+    userId: number,
   ): Promise<Ticket[]> {
+    const thisMoment = new Date();
+    const twentyFourHoursAhead = new Date(
+      thisMoment.getTime() + 24 * 60 * 60 * 1000,
+    );
+    const ms = await this.movieScreeningRepository.findOne({
+      where: {
+        id: movieScreeningId,
+        status: MovieScreeningTypeEnum.ACTIVE,
+        dateAndTime: MoreThan(twentyFourHoursAhead),
+      },
+    });
+
+    if (!ms) {
+      throw new NotFoundException(
+        `TICKET FOR MOVIESCREENING WITH ID: ${movieScreeningId} CANNOT BE BOUGHT OR RESERVED (DOES NOT EXIST OR NOT ACTIVE OR 24H EXCEPTION) `,
+      );
+    }
+
     for (let i = 0; i < seatIds.length; i++) {
       const check = await this.movieScreeningService.seatExists(
         movieScreeningId,
@@ -62,28 +84,7 @@ export class TicketService {
     }
     const ticketStatus =
       actionType === 'buy' ? TicketType.BOUGHT : TicketType.RESERVED;
-    const reservedAt = actionType === 'reserve' ? new Date() : null;
-
-    const ms = await this.movieScreeningRepository.findOne({
-      where: { id: movieScreeningId },
-    });
-
-    if (actionType === 'reserve') {
-      if (reservedAt >= ms.dateAndTime) {
-        throw new ForbiddenException(
-          'CANNOT BE RESERVED. (reservedAt >= ms.dateAndTime) ',
-        );
-      }
-    }
-
-    if (actionType === 'buy') {
-      const currentDateAndTime = new Date();
-      if (currentDateAndTime >= ms.dateAndTime) {
-        throw new ForbiddenException(
-          'CANNOT BE BOUGHT. (currentDateAndTime >= ms.dateAndTime) ',
-        );
-      }
-    }
+    const reservedAt = actionType === 'reserve' ? thisMoment : null;
 
     const newTickets: Ticket[] = [];
     for (let i = 0; i < seatIds.length; i++) {
@@ -106,12 +107,12 @@ export class TicketService {
 
     if (actionType === 'reserve') {
       const reservationDetails = savedTickets;
-      await await this.sendReservationEmail(user.email, reservationDetails);
+      await this.sendReservationEmail(user.email, reservationDetails);
     }
     return savedTickets;
   }
 
-  async cancelReservation(ticketId: number, userId): Promise<any> {
+  async cancelReservation(ticketId: number, userId: number): Promise<any> {
     const found = await this.ticketRepository.findOne({
       where: { id: ticketId, userId: userId },
     });
@@ -124,6 +125,7 @@ export class TicketService {
 
     if (found.ticketStatus === 'RESERVED') {
       await this.ticketRepository.delete(ticketId);
+      await this.sendCanceledReservationEmail(userId, found);
       return {
         message: `RESERVATION FOR TICKET WITH ID:${ticketId} IS CANCELED`,
       };
@@ -177,6 +179,20 @@ export class TicketService {
     );
   }
 
+  async sendCanceledReservationEmail(
+    userId: number,
+    ticket: Ticket,
+  ): Promise<void> {
+    console.log('TICKET CANCELED:');
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    const reservationText = JSON.stringify(ticket);
+    await this.emailService.sendEmail(
+      user.email,
+      'Canceled Ticket Reservation from CINEMA-API ',
+      reservationText,
+    );
+  }
+
   async getTotalPrice(movieScreeningId: number, userId): Promise<any> {
     const ms = await this.movieScreeningRepository.findOne({
       where: { id: movieScreeningId },
@@ -184,7 +200,7 @@ export class TicketService {
 
     const movieId = ms.movieId;
 
-    const temp = await this.ticketRepository
+    const tickets = await this.ticketRepository
       .createQueryBuilder('ticket')
       .leftJoinAndSelect('ticket.user', 'user')
       .leftJoinAndSelect('ticket.movieScreening', 'movie-screening')
@@ -194,9 +210,24 @@ export class TicketService {
       .where('movie.id=:movieId', { movieId })
       .getMany();
 
-    const numberofTickets = temp.length;
-    const price = temp[0].movieScreening.movie.price;
-    const sum = numberofTickets * price;
-    return `TOTAL PRICE FOR ${numberofTickets} TICKETS, WITH PRICE OF ${price} IS: ${sum}`;
+    let seatIds = [];
+    tickets.forEach((t) => {
+      seatIds.push(t.seatId);
+    });
+
+    const seatDTOs: SeatDTO[] = await this.movieService.calculatePrice(movieId);
+
+    let totalPrice = 0;
+    for (let i = 0; i < seatDTOs.length; i++) {
+      for (let j = 0; j < seatIds.length; j++) {
+        if (seatDTOs[i].seatId === seatIds[j]) {
+          console.log(seatDTOs[i]);
+          totalPrice = totalPrice + seatDTOs[i].calculatedPrice;
+        }
+      }
+    }
+    console.log(totalPrice);
+
+    return `TOTAL PRICE FOR ${tickets.length} TICKETS IS ${totalPrice}`;
   }
 }

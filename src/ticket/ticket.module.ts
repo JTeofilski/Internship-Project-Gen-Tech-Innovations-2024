@@ -7,14 +7,17 @@ import { MovieScreeningModule } from 'src/movie-screening/movie-screening.module
 import { User } from 'src/entities/user.entity';
 import { MovieScreening } from 'src/entities/movieScreening.entity';
 import { EmailService } from 'email/email.service';
+import { CronService } from 'cron/cron.service';
+import { MovieModule } from 'src/movie/movie.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Ticket, User, MovieScreening]),
     MovieScreeningModule,
+    MovieModule,
   ],
   controllers: [TicketController],
-  providers: [TicketService, /*CronService,*/ EmailService],
+  providers: [TicketService, /*CronService, */ EmailService],
   exports: [TicketService],
 })
 export class TicketModule {}

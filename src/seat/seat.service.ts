@@ -14,7 +14,7 @@ export class SeatService {
   ) {}
 
   // Working with virtual field!!!
-  async getSeats(movieScreeningId: number): Promise<any> {
+  async getSeats(movieScreeningId: number): Promise<Seat[]> {
     const movieScreening = await this.movieScreeningRepository.findOne({
       where: { id: movieScreeningId },
     });

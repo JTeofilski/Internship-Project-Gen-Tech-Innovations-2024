@@ -61,17 +61,15 @@ export class MovieScreeningController {
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.ADMIN)
   @Delete('soft-delete/:id')
-  async softDeleteMovieScreening(
-    @Param('id') id: number,
-  ): Promise<MovieScreening> {
+  async softDeleteMovieScreening(@Param('id') id: number): Promise<string> {
     return await this.movieScreeningService.softDeleteMovieScreening(id);
   }
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)
   @UserType(UserTypeEnum.ADMIN)
   @Post('restore/:id')
-  async restoreMovieScreening(@Param('id') id: number) {
-    await this.movieScreeningService.restoreMovieScreening(id);
+  async restoreMovieScreening(@Param('id') id: number): Promise<string> {
+    return await this.movieScreeningService.restoreMovieScreening(id);
   }
 
   @UseGuards(AuthenticatedGuard, UserTypeGuard)

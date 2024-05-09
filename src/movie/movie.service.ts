@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Movie } from 'src/entities/movie.entity';
 import { GenreService } from 'src/genre/genre.service';
 import MovieCreateDTO from 'src/movie/dtos/movie.create.dto';
-import { SeatDTO } from 'src/seat/seat.dto';
+import { SeatDTO } from 'src/seat/dtos/seat.dto';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -181,7 +181,7 @@ export class MovieService {
       .getMany();
   }
 
-  async substringFilter(word: string): Promise<any> {
+  async substringFilter(word: string): Promise<Movie[]> {
     return await this.movieRepository
       .createQueryBuilder('movie')
       .where('LOWER(movie.name) LIKE LOWER(:substring)', {
@@ -190,7 +190,7 @@ export class MovieService {
       .getMany();
   }
 
-  async calculatePrice(movieId: number): Promise<any> {
+  async calculatePrice(movieId: number): Promise<SeatDTO[]> {
     const movies = await this.movieRepository
       .createQueryBuilder('movie')
       .leftJoinAndSelect('movie.movieScreenings', 'ms')
