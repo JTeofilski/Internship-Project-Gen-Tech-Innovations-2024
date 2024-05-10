@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PassportSerializer } from '@nestjs/passport';
-import { classToPlain } from 'class-transformer';
 import { UserService } from 'src/user/user.service';
 
 @Injectable()

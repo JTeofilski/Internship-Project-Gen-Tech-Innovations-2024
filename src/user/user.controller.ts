@@ -35,9 +35,7 @@ export class UserController {
     @Body() userDTO: UserUpdateDTO,
     @Req() request,
   ): Promise<User> {
-    const userFromRequestId = request.user.id;
-
-    return await this.userService.updateUser(id, userDTO, userFromRequestId);
+    return await this.userService.updateUser(id, userDTO, request.user.id);
   }
 
   @Post('forgotten-password')
