@@ -21,6 +21,10 @@ import { UserTypeEnum } from 'src/enums/userType.enum';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  // User is created on @Request object in LocalStrategy validate() method
+  // LocalAuthGuard is used ONLY HERE
+  // LocalAuthGuard is custom-made - check LocalAuthGuard to see the details
+  // CHECK Passport.js DOCUMENTATION for more details
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req, @Body() body: LoginDTO): Promise<User> {
@@ -53,6 +57,7 @@ export class AuthController {
   @UserType(UserTypeEnum.CUSTOMER)
   @Get('/customer')
   getAvailableForCustomer(@Request() req): Promise<User> {
+    //console.log('AUTH CONTROLLER: ', req.user);
     const res = req.user;
     return res;
   }

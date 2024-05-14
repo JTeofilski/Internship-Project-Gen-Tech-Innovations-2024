@@ -19,9 +19,10 @@ export class AuthenticatedGuard implements CanActivate {
 }
 
 // Implementira CanActivate interfejs
-// Sluzi tome da,  samo AUTENTIFIKOVANI(pronadjeni u bazi) korisnici imaju pristup ruti iznad koje je ovaj Guard
-// canActivate sa context-om, poziva se za svaki zahtev ka ruti iznad koje je ovaj Guard
-// u request delu se izvuce sam zahtev
-// sledece, isAuthenticated() je metod vezan za Passport, ne za sam interfejs - CanActivate
 // CanActivate interfejs ima samo jednu metodu - canActivate!!!
+
+// Sluzi tome da, samo AUTENTIFIKOVANI(pronadjeni u bazi) korisnici imaju pristup ruti iznad koje je ovaj Guard
+// canActivate sa context-om, poziva se za svaki zahtev ka ruti iznad koje je ovaj Guard
+// U request delu se izvuce sam zahtev iz context-a
+// Sledece, isAuthenticated() je metod vezan za Passport, ne za sam interfejs CanActivate????
 // isAuthenticated() se obicno koristi nad request objektom

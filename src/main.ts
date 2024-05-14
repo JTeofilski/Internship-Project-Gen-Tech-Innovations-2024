@@ -56,6 +56,8 @@ async function bootstrap() {
     next();
   });
 
+  // Passport mora da se inicijalizu da bi sve radilo
+  // Mislim na Guard-ove, pre svega
   app.use(passport.initialize());
   app.use(passport.session());
 

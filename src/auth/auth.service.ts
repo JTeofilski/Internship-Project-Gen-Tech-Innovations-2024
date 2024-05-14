@@ -9,15 +9,12 @@ export class AuthService {
 
   async validateUser(loginDTO: LoginDTO): Promise<User> {
     const user = await this.userService.findOneByEmail(loginDTO.email);
+    //console.log('auth service');
 
     if (user && (await user.comparePassword(loginDTO.password))) {
       return user;
     } else {
       return null;
     }
-  }
-
-  getHello(): string {
-    return 'Hello World!';
   }
 }

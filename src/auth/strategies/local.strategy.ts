@@ -10,6 +10,7 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
   // Umesto username-a i password-a koji su karakteristicni za local-strategy
   // Mi koristimo email i password, sto je podeseno u super()
   constructor(private readonly authService: AuthService) {
+    // Konstruktor roditeljske klase je super()
     super({
       usernameField: 'email',
       passwordField: 'password',
@@ -18,7 +19,9 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
 
   // Svaka strategija ima svoju validate metodu kod nas je u pitanju LOCAL strategija
   // USER is returned so Passport can complete its tasks - creating the user property on the Request object
+  // CREATING USER ON THE REQUEST OBJECT!!!!!
   async validate(email: string, password: string): Promise<any> {
+    //console.log('local strategy');
     const user = await this.authService.validateUser({ email, password });
     if (!user) {
       throw new NotFoundException(
