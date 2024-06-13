@@ -8,6 +8,8 @@ import { ClassSerializerInterceptor } from '@nestjs/common';
 import * as fs from 'fs';
 import { DTO_Schemas } from 'dto-schemas';
 import { globalValidationPipe } from 'validation.pipe';
+// const Redis = require('ioredis');
+import Redis from 'ioredis';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -85,6 +87,25 @@ async function bootstrap() {
   // Ovo se koristi kako bi se omogućilo čitanje dekoratora @Expose
   // Napravila sam test i zakomentarisala ovu liniju i pozvala endpoint koji koji gadja entitet gde imam virtuelno polje(Seat) i zaista ne radi - ne baca gresku, ali ne pokazuje vrednost za virt.polje
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+
+  const redis = new Redis({
+    port: 6379,
+    host: '127.0.0.1',
+  });
+
+  // Postavljanje vrednosti u Redis
+  redis.set('key', 'value');
+
+  // Dobijanje vrednosti iz Redis
+  redis.get('key').then((result) => {
+    console.log(result); // Output: 'value'
+  });
+
+  // Brisanje ključa iz Redis
+  redis.del('key');
+
+  // Zatvaranje Redis klijenta kada više nije potreban
+  redis.quit();
 
   await app.listen(process.env.APP_PORT);
 }
