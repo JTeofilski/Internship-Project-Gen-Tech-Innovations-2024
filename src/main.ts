@@ -88,12 +88,17 @@ async function bootstrap() {
   // Napravila sam test i zakomentarisala ovu liniju i pozvala endpoint koji koji gadja entitet gde imam virtuelno polje(Seat) i zaista ne radi - ne baca gresku, ali ne pokazuje vrednost za virt.polje
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
+  // ZATO STO IMAM HORIZONTALNO SKALIRANJE, SVAKA MOJA INSTANCA NAPRAVLJENA UZ POMOC pm2 CE SE POVEZATI NA OVAJ REDIS SERVER
+  // DA SE TO PROVERI, POKRECE SE APLIKACIJA SA: npm run start:pm2 SKRIPTOM
+  // TU SKRIPTU JE NAPISAO UROS, MENI JE FALIO BUILD DEO, I ON JE TO DODAO
+  // TO JE SADA BITNO JER DA BISMO PRATILI STA KOJA INSTANCA RADI, MORAMO DA KORISTIMO KOMANDU: pm2 logs
+  // PRE BUILD-A MI pm2 logs NIJE PISAO DOBRE LOGOVE!!!
   const redis = new Redis({
     port: 6379,
     host: '127.0.0.1',
   });
 
-  // Postavljanje vrednosti u Redis
+  /* // Postavljanje vrednosti u Redis
   redis.set('key', 'value');
 
   // Dobijanje vrednosti iz Redis
@@ -102,7 +107,27 @@ async function bootstrap() {
   });
 
   // Brisanje ključa iz Redis
-  redis.del('key');
+  redis.del('key');*/
+
+  // Slanje poruke iz jedne instance
+  async function sendMessage(message: string) {
+    await redis.lpush('messages', message);
+    console.log(`Sent message: ${message}`);
+  }
+
+  // Čitanje poruke u drugoj instanci
+  async function receiveMessage() {
+    const message = await redis.lpop('messages');
+    if (message) {
+      console.log(`Received message: ${message}`);
+    } else {
+      console.log('No messages available.');
+    }
+  }
+
+  // Primer poziva funkcija za slanje i primanje poruka
+  sendMessage('Hello!');
+  receiveMessage();
 
   // Zatvaranje Redis klijenta kada više nije potreban
   redis.quit();
