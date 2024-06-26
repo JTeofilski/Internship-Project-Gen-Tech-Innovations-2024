@@ -6,15 +6,16 @@ This project is a **CINEMA APPLICATION** which is a web application for displayi
 
 **Node.js** is used as runtime environment.
 
-It also connects to a **Redis server** to ensure proper functionality.
+It also connects to a **Redis server** and a **PostgreSQL database** to ensure proper functionality.
 
 ## Prerequisites
 
-- Node.js
-- npm
+- Node.js(latest version)
+- npm(latest version)
 - Redis(https://riptutorial.com/redis/example/29962/installing-and-running-redis-server-on-windows)
+- PostgreSQL(latest version)
 
-**Make sure that Redis server is running.**
+**Make sure that Redis server and PostgreSQL server are running.**
 
 ## Installation
 
