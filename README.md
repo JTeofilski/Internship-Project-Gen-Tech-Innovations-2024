@@ -10,10 +10,10 @@ It also connects to a **Redis server** and a **PostgreSQL database** to ensure p
 
 ## Prerequisites
 
-- Node.js(latest version)
-- npm(latest version)
+- Node.js(**v18.12.1**)
+- npm(**v8.19.2**)
 - Redis(https://riptutorial.com/redis/example/29962/installing-and-running-redis-server-on-windows)
-- PostgreSQL(latest version)
+- PostgreSQL(**v15**)
 
 **Make sure that Redis server and PostgreSQL server are running.**
 
