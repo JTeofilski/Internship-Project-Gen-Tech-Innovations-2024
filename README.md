@@ -17,6 +17,8 @@ It also connects to a **Redis server** and a **PostgreSQL database** to ensure p
 
 **Make sure that Redis server and PostgreSQL server are running.**
 
+You can create a **.env** file in the root directory of your project according to **.env.example** file.
+
 ## Installation
 
 - Clone this repository
